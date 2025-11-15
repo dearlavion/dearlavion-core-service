@@ -50,6 +50,16 @@
       <scope>test</scope>
       <version>${spring.boot.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-webflux</artifactId>
+      <version>${spring.boot.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-security</artifactId>
+      <version>${spring.boot.version}</version>
+    </dependency>
   </dependencies>
 
   <build>
