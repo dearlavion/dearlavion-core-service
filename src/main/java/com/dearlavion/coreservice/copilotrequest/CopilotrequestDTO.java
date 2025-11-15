@@ -1,5 +1,7 @@
 package com.dearlavion.coreservice.copilotrequest;
 
+import java.util.Date;
+
 public class CopilotrequestDTO {
     private String id;
     private String wishId;

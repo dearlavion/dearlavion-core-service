@@ -1,5 +1,7 @@
 package com.dearlavion.coreservice.reputation;
 
+import java.util.Date;
+
 public class ReputationDTO {
     private String id;
     private String userId;

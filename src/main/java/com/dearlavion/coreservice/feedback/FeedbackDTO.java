@@ -1,5 +1,7 @@
 package com.dearlavion.coreservice.feedback;
 
+import java.util.Date;
+
 public class FeedbackDTO {
     private String id;
     private String reputationId;

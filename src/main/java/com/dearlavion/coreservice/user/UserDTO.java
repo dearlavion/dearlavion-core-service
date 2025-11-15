@@ -1,5 +1,7 @@
 package com.dearlavion.coreservice.user;
 
+import java.util.Date;
+
 public class UserDTO {
     private String id;
     private String username;

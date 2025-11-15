@@ -1,5 +1,7 @@
 package com.dearlavion.coreservice.wish;
 
+import java.util.Date;
+
 public class WishDTO {
     private String id;
     private String userId;
