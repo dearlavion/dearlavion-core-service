@@ -26,6 +26,11 @@ public class WishServiceImpl implements WishService {
     }
 
     @Override
+    public Optional<WishDTO> findByUserName(String userName) {
+        return repo.findByUserName(userName).map(e -> mapper.map(e, WishDTO.class));
+    }
+
+    @Override
     public WishDTO create(WishDTO dto) {
         Wish entity = mapper.map(dto, Wish.class);
         Wish saved = repo.save(entity);
@@ -33,10 +38,10 @@ public class WishServiceImpl implements WishService {
     }
 
     @Override
-    public WishDTO update(String id, WishDTO dto) {
-        return repo.findById(id).map(existing -> {
+    public WishDTO update(String name, WishDTO dto) {
+        return repo.findByUserName(name).map(existing -> {
             mapper.map(dto, existing);
-            existing.setId(id);
+            existing.setUserName(name);
             Wish saved = repo.save(existing);
             return mapper.map(saved, WishDTO.class);
         }).orElseThrow(() -> new RuntimeException("Wish not found"));

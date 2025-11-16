@@ -45,7 +45,7 @@ public class TokenVerificationFilter extends OncePerRequestFilter {
                 new UsernamePasswordAuthenticationToken(
                         verification.getUsername(),
                         null,
-                        List.of()
+                        List.of(() -> "ROLE_USER")
                 );
 
         SecurityContextHolder.getContext().setAuthentication(auth);

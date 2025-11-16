@@ -4,13 +4,15 @@ import java.util.Date;
 
 public class WishDTO {
     private String id;
-    private String userId;
+    private String userName;
     private String image;
     private String title;
     private String body;
     private String location;
     private String category;
     private String status;
+    private String rate;
+    private String amount;
     private Date startDate;
     private Date endDate;
     private Date createdAt;
@@ -18,11 +20,19 @@ public class WishDTO {
 
     public WishDTO() {}
 
+    public String getRate() {return rate;}
+
+    public void setRate(String rate) {this.rate = rate;}
+
+    public String getAmount() {return amount;}
+
+    public void setAmount(String amount) {this.amount = amount;}
+
     public String getId() { return this.id; }
     public void setId(String id) { this.id = id; }
 
-    public String getUserId() { return this.userId; }
-    public void setUserId(String userId) { this.userId = userId; }
+    public String getUserName() { return this.userName; }
+    public void setUserName(String userName) { this.userName = userName; }
 
     public String getImage() { return this.image; }
     public void setImage(String image) { this.image = image; }
