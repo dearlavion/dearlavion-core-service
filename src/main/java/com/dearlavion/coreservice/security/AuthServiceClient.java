@@ -1,28 +1,25 @@
 package com.dearlavion.coreservice.security;
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Map;
 
 @Service
 public class AuthServiceClient {
 
-    private final WebClient webClient;
-
-    public AuthServiceClient(WebClient.Builder builder) {
-        this.webClient = builder
-                .baseUrl("http://dearlavion-authentication-service/api/auth")
-                .build();
-    }
+    private final RestTemplate restTemplate = new RestTemplate();
+    private final String authServiceUrl = "http://localhost:8080/api/auth/verify";
 
     public AuthVerificationResponse verify(String token) {
-        return webClient.post()
-                .uri("/verify")
-                .bodyValue(Map.of("token", token))
-                .retrieve()
-                .bodyToMono(AuthVerificationResponse.class)
-                .block();
+        try {
+            return restTemplate.postForObject(
+                    authServiceUrl,
+                    Map.of("token", token),
+                    AuthVerificationResponse.class
+            );
+        } catch (Exception e) {
+            return null; // token invalid or service unavailable
+        }
     }
 }
-

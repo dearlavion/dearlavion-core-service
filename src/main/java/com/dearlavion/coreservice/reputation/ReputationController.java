@@ -3,9 +3,9 @@ package com.dearlavion.coreservice.reputation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
-@io.swagger.v3.oas.annotations.tags.Tag(name = "Reputation")
 @RestController
 @RequestMapping("/api/reputation")
 public class ReputationController {

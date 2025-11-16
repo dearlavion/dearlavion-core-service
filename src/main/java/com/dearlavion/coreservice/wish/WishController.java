@@ -3,9 +3,9 @@ package com.dearlavion.coreservice.wish;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
-@io.swagger.v3.oas.annotations.tags.Tag(name = "Wish")
 @RestController
 @RequestMapping("/api/wish")
 public class WishController {
@@ -16,7 +16,10 @@ public class WishController {
     public List<WishDTO> getAll() { return service.findAll(); }
 
     @GetMapping("/{id}")
-    public ResponseEntity<WishDTO> getById(@PathVariable String id) { return service.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build()); }
+    public ResponseEntity<WishDTO> getById(@PathVariable String id) {
+        System.out.println("here");
+        return service.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    }
 
     @PostMapping
     public WishDTO create(@RequestBody WishDTO dto) { return service.create(dto); }

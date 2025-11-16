@@ -3,9 +3,9 @@ package com.dearlavion.coreservice.user;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
-@io.swagger.v3.oas.annotations.tags.Tag(name = "User")
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
