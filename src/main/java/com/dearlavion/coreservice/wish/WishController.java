@@ -25,10 +25,12 @@ public class WishController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable String id) { service.delete(id); return ResponseEntity.noContent().build(); }
 
-    @GetMapping
-    public List<WishDTO> getAll() { return service.findAll(); }
+    @GetMapping("/user/{username}")
+    public List<WishDTO> getAllByUser(@PathVariable String username) {
+        return service.findAllByUserName(username);
+    }
 
-    @GetMapping("/{id}")
+    @GetMapping("/id/{id}")
     public ResponseEntity<WishDTO> getById(@PathVariable String id) {
         return service.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }

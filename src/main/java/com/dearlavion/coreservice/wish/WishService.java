@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface WishService {
-    List<WishDTO> findAll();
+    List<WishDTO> findAllByUserName(String userName);
     Optional<WishDTO> findById(String id);
     Optional<WishDTO> findByUserName(String userName);
     WishDTO create(WishDTO dto);

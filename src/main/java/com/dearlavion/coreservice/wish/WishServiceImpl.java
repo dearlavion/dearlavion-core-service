@@ -4,6 +4,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,11 +15,6 @@ public class WishServiceImpl implements WishService {
 
     @Autowired
     private ModelMapper mapper;
-
-    @Override
-    public List<WishDTO> findAll() {
-        return repo.findAll().stream().map(e -> mapper.map(e, WishDTO.class)).toList();
-    }
 
     @Override
     public Optional<WishDTO> findById(String id) {
@@ -37,6 +33,16 @@ public class WishServiceImpl implements WishService {
             dto.setId(null);
         }
         Wish entity = mapper.map(dto, Wish.class);
+
+        //to avoid duplicate categories
+        entity.setCategories(dto.getCategories());
+
+        // 🔥 Set createdAt only on creation
+        entity.setCreatedAt(new Date());
+
+        // 🔥 Optional: also set updatedAt = createdAt (good practice)
+        entity.setUpdatedAt(entity.getCreatedAt());
+
         Wish saved = repo.save(entity);
         return mapper.map(saved, WishDTO.class);
     }
@@ -44,9 +50,15 @@ public class WishServiceImpl implements WishService {
     @Override
     public WishDTO update(String id, WishDTO dto) {
         return repo.findById(id).map(existing -> {
-            String[] categories = dto.getCategories();
+            // Map incoming fields into existing entity
             mapper.map(dto, existing);
-            existing.setCategories(categories); //avoid duplicate categories
+
+            // Ensure categories properly copied
+            existing.setCategories(dto.getCategories());
+
+            // 🔥 Update timestamp
+            existing.setUpdatedAt(new Date());
+
             Wish saved = repo.save(existing);
             return mapper.map(saved, WishDTO.class);
         }).orElseThrow(() -> new RuntimeException("Wish not found"));
@@ -55,5 +67,13 @@ public class WishServiceImpl implements WishService {
     @Override
     public void delete(String id) {
         repo.deleteById(id);
+    }
+
+    @Override
+    public List<WishDTO> findAllByUserName(String userName) {
+        return repo.findAllByUserName(userName)
+                .stream()
+                .map(e -> mapper.map(e, WishDTO.class))
+                .toList();
     }
 }
