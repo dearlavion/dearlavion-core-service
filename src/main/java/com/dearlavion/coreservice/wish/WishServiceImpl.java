@@ -32,6 +32,10 @@ public class WishServiceImpl implements WishService {
 
     @Override
     public WishDTO create(WishDTO dto) {
+        // Prevent empty string ID (Mongo will treat it as provided)
+        if (dto.getId() == null || dto.getId().isBlank()) {
+            dto.setId(null);
+        }
         Wish entity = mapper.map(dto, Wish.class);
         Wish saved = repo.save(entity);
         return mapper.map(saved, WishDTO.class);
