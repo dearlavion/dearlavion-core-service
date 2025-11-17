@@ -9,7 +9,7 @@ public class WishDTO {
     private String title;
     private String body;
     private String location;
-    private String category;
+    private String[] categories;
     private String status;
     private String rate;
     private String amount;
@@ -19,6 +19,9 @@ public class WishDTO {
     private Date updatedAt;
 
     public WishDTO() {}
+    public String[] getCategories() {return categories;}
+
+    public void setCategories(String[] categories) {this.categories = categories;}
 
     public String getRate() {return rate;}
 
@@ -46,8 +49,6 @@ public class WishDTO {
     public String getLocation() { return this.location; }
     public void setLocation(String location) { this.location = location; }
 
-    public String getCategory() { return this.category; }
-    public void setCategory(String category) { this.category = category; }
 
     public String getStatus() { return this.status; }
     public void setStatus(String status) { this.status = status; }

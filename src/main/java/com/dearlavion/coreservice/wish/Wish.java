@@ -21,7 +21,7 @@ public class Wish {
     private String title; // Wish title
     private String body; // Wish description
     private String location; // Location
-    private String category; // Category name or id
+    private String[] categories; // Category name or id
     private String status; // OPEN/ONGOING/COMPLETED
     private Date startDate; // Start date
     private Date endDate; // End date

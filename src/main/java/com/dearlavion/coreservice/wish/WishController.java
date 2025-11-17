@@ -18,7 +18,9 @@ public class WishController {
     }
 
     @PutMapping("/{id}")
-    public WishDTO update(@PathVariable String id, @RequestBody WishDTO dto) { return service.update(id, dto); }
+    public WishDTO update(@PathVariable String id, @RequestBody WishDTO dto) {
+        return service.update(id, dto);
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable String id) { service.delete(id); return ResponseEntity.noContent().build(); }
@@ -28,7 +30,6 @@ public class WishController {
 
     @GetMapping("/{id}")
     public ResponseEntity<WishDTO> getById(@PathVariable String id) {
-        System.out.println("here");
         return service.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 }

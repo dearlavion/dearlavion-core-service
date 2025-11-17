@@ -42,10 +42,11 @@ public class WishServiceImpl implements WishService {
     }
 
     @Override
-    public WishDTO update(String name, WishDTO dto) {
-        return repo.findByUserName(name).map(existing -> {
+    public WishDTO update(String id, WishDTO dto) {
+        return repo.findById(id).map(existing -> {
+            String[] categories = dto.getCategories();
             mapper.map(dto, existing);
-            existing.setUserName(name);
+            existing.setCategories(categories); //avoid duplicate categories
             Wish saved = repo.save(existing);
             return mapper.map(saved, WishDTO.class);
         }).orElseThrow(() -> new RuntimeException("Wish not found"));
