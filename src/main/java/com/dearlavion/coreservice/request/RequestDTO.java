@@ -1,0 +1,56 @@
+package com.dearlavion.coreservice.request;
+
+import java.util.Date;
+
+public class RequestDTO {
+
+    private String id;
+    private String wishId;
+    private String userId;
+    private String message;
+    private String status; // e.g. PENDING / ACCEPTED / DECLINED
+
+    private boolean accepted;
+
+    private String[] portfolios;
+    private String rateType;
+    private String amount;
+
+    private Date createdAt;
+    private Date updatedAt;
+
+    public RequestDTO() {}
+
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
+
+    public String getWishId() { return wishId; }
+    public void setWishId(String wishId) { this.wishId = wishId; }
+
+    public String getUserId() { return userId; }
+    public void setUserId(String userId) { this.userId = userId; }
+
+    public String getMessage() { return message; }
+    public void setMessage(String message) { this.message = message; }
+
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
+
+    public boolean isAccepted() { return accepted; }
+    public void setAccepted(boolean accepted) { this.accepted = accepted; }
+
+    public String[] getPortfolios() { return portfolios; }
+    public void setPortfolios(String[] portfolios) { this.portfolios = portfolios; }
+
+    public String getRateType() { return rateType; }
+    public void setRateType(String rateType) { this.rateType = rateType; }
+
+    public String getAmount() { return amount; }
+    public void setAmount(String amount) { this.amount = amount; }
+
+    public Date getCreatedAt() { return createdAt; }
+    public void setCreatedAt(Date createdAt) { this.createdAt = createdAt; }
+
+    public Date getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(Date updatedAt) { this.updatedAt = updatedAt; }
+}
