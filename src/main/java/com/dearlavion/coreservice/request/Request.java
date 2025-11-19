@@ -21,7 +21,8 @@ public class Request {
 
     private String wishId;
     private String userId;
-    private String message;
+    private String title;
+    private String body;
     private String status;
 
     private boolean accepted;
