@@ -30,6 +30,7 @@ public class Request {
     private String[] portfolios;
     private String rateType;
     private String amount;
+    private String image;
 
     private Date createdAt;
     private Date updatedAt;
