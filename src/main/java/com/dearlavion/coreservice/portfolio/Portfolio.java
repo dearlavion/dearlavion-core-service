@@ -23,7 +23,7 @@ public class Portfolio {
     private String title;
     private String body;
     private String link;
-    private boolean isHidden;
+    private boolean hidden;
     private String image;
 
     private Date createdAt;

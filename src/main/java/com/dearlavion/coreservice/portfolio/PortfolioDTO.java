@@ -1,5 +1,6 @@
 package com.dearlavion.coreservice.portfolio;
 
+
 import java.util.Date;
 
 public class PortfolioDTO {
@@ -9,7 +10,8 @@ public class PortfolioDTO {
     private String title;
     private String body;
     private String link;
-    private boolean isHidden;
+
+    private boolean hidden;
     private String image;
 
     private Date createdAt;
@@ -31,12 +33,12 @@ public class PortfolioDTO {
 
     public String getLink() { return link; }
     public void setLink(String link) { this.link = link; }
-
-    public boolean isHidden() { return isHidden; }
-    public void setHidden(boolean hidden) { isHidden = hidden; }
-
     public String getImage() { return image; }
     public void setImage(String image) { this.image = image; }
+
+    public boolean isHidden() { return hidden; }
+
+    public void setHidden(boolean hidden) { this.hidden = hidden;}
 
     public Date getCreatedAt() { return createdAt; }
     public void setCreatedAt(Date createdAt) { this.createdAt = createdAt; }
