@@ -7,7 +7,7 @@ public interface RequestService {
 
     Optional<RequestDTO> findById(String id);
     List<RequestDTO> findAllByWishId(String wishId);
-    List<RequestDTO> findAllByUserId(String userId);
+    List<RequestDTO> findAllByUsername(String userId);
 
     RequestDTO create(RequestDTO dto);
     RequestDTO update(String id, RequestDTO dto);

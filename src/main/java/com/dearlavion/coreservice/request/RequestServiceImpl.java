@@ -31,8 +31,8 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public List<RequestDTO> findAllByUserId(String userId) {
-        return repo.findAllByUserId(userId)
+    public List<RequestDTO> findAllByUsername(String userId) {
+        return repo.findAllByUsername(userId)
                 .stream()
                 .map(e -> mapper.map(e, RequestDTO.class))
                 .toList();

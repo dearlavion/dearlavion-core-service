@@ -43,6 +43,6 @@ public class RequestController {
 
     @GetMapping("/user/{userId}")
     public List<RequestDTO> getAllByUser(@PathVariable String userId) {
-        return service.findAllByUserId(userId);
+        return service.findAllByUsername(userId);
     }
 }
