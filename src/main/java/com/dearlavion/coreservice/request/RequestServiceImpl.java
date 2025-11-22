@@ -60,6 +60,9 @@ public class RequestServiceImpl implements RequestService {
             mapper.map(dto, existing);
             existing.setUpdatedAt(new Date());
 
+            //force replace portfolios instead of merging
+            existing.setPortfolios(dto.getPortfolios());
+
             Request saved = repo.save(existing);
             return mapper.map(saved, RequestDTO.class);
 
