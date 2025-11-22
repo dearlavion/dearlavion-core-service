@@ -6,6 +6,7 @@ public class RequestDTO {
 
     private String id;
     private String wishId;
+    private String wisherName;
     private String username;
     private String title;
     private String body;
@@ -27,6 +28,8 @@ public class RequestDTO {
     public void setId(String id) { this.id = id; }
     public String getWishId() { return wishId; }
     public void setWishId(String wishId) { this.wishId = wishId; }
+    public String getWisherName() { return wisherName; }
+    public void setWisherName(String wisherName) { this.wisherName = wisherName; }
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
     public String getTitle() { return title; }

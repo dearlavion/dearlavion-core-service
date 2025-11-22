@@ -20,6 +20,7 @@ public class Request {
     private String id;
 
     private String wishId;
+    private String wisherName;
     private String username;
     private String title;
     private String body;
