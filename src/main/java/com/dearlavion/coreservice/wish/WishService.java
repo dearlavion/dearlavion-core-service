@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface WishService {
-    List<WishDTO> findAllByUserName(String userName);
+    List<WishDTO> findAllByUsername(String username);
     Optional<WishDTO> findById(String id);
-    Optional<WishDTO> findByUserName(String userName);
+    Optional<WishDTO> findByUsername(String username);
     WishDTO create(WishDTO dto);
     WishDTO update(String id, WishDTO dto);
     void delete(String id);

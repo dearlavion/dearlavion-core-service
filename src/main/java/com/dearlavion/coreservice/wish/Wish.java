@@ -16,7 +16,7 @@ import java.util.Date;
 public class Wish {
     @Id
     private String id; // Primary key
-    private String userName; // FK to user, can be many
+    private String username; // FK to user, can be many
     private String image; // Wish image URL
     private String title; // Wish title
     private String body; // Wish description
@@ -27,7 +27,10 @@ public class Wish {
     private Date endDate; // End date
     private Date createdAt; // Created timestamp
     private Date updatedAt; // Updated timestamp
-    private String rate;
+    private String rateType;
     private String amount;
+    private String copilotName;
+    private String requestId;
+    private String[] requests;
 
 }

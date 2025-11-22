@@ -27,7 +27,7 @@ public class WishController {
 
     @GetMapping("/user/{username}")
     public List<WishDTO> getAllByUser(@PathVariable String username) {
-        return service.findAllByUserName(username);
+        return service.findAllByUsername(username);
     }
 
     @GetMapping("/id/{id}")

@@ -8,6 +8,6 @@ import java.util.Optional;
 
 @Repository
 public interface WishRepository extends MongoRepository<Wish, String> {
-    Optional<Wish> findByUserName(String userName);
-    List<Wish> findAllByUserName(String userName);
+    Optional<Wish> findByUsername(String username);
+    List<Wish> findAllByUsername(String username);
 }

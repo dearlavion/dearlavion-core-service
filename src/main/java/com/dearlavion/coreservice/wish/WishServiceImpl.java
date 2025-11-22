@@ -22,8 +22,8 @@ public class WishServiceImpl implements WishService {
     }
 
     @Override
-    public Optional<WishDTO> findByUserName(String userName) {
-        return repo.findByUserName(userName).map(e -> mapper.map(e, WishDTO.class));
+    public Optional<WishDTO> findByUsername(String username) {
+        return repo.findByUsername(username).map(e -> mapper.map(e, WishDTO.class));
     }
 
     @Override
@@ -70,8 +70,8 @@ public class WishServiceImpl implements WishService {
     }
 
     @Override
-    public List<WishDTO> findAllByUserName(String userName) {
-        return repo.findAllByUserName(userName)
+    public List<WishDTO> findAllByUsername(String username) {
+        return repo.findAllByUsername(username)
                 .stream()
                 .map(e -> mapper.map(e, WishDTO.class))
                 .toList();
