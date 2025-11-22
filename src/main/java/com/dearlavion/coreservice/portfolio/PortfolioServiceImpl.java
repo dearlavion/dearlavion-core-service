@@ -23,8 +23,8 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     @Override
-    public Optional<PortfolioDTO> findByUserName(String userName) {
-        return repo.findByUserName(userName).map(e -> mapper.map(e, PortfolioDTO.class));
+    public Optional<PortfolioDTO> findByUsername(String username) {
+        return repo.findByUsername(username).map(e -> mapper.map(e, PortfolioDTO.class));
     }
 
     @Override
@@ -58,8 +58,8 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     @Override
-    public List<PortfolioDTO> findAllByUserName(String userName) {
-        return repo.findAllByUserName(userName)
+    public List<PortfolioDTO> findAllByUsername(String username) {
+        return repo.findAllByUsername(username)
                 .stream()
                 .map(e -> mapper.map(e, PortfolioDTO.class))
                 .toList();

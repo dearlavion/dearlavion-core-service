@@ -19,7 +19,7 @@ public class Portfolio {
     @Id
     private String id;
 
-    private String userName;
+    private String username;
     private String title;
     private String body;
     private String link;

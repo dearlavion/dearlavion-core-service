@@ -8,6 +8,6 @@ import java.util.Optional;
 
 @Repository
 public interface PortfolioRepository extends MongoRepository<Portfolio, String> {
-    Optional<Portfolio> findByUserName(String userName);
-    List<Portfolio> findAllByUserName(String userName);
+    Optional<Portfolio> findByUsername(String username);
+    List<Portfolio> findAllByUsername(String username);
 }

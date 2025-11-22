@@ -31,7 +31,7 @@ public class PortfolioController {
 
     @GetMapping("/user/{username}")
     public List<PortfolioDTO> getAllByUser(@PathVariable String username) {
-        return service.findAllByUserName(username);
+        return service.findAllByUsername(username);
     }
 
     @GetMapping("/id/{id}")
