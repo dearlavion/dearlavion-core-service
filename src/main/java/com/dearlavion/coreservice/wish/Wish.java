@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Builder
@@ -31,6 +32,8 @@ public class Wish {
     private String amount;
     private String copilotName;
     private String requestId;
-    private String[] requests;
+    //private String[] requests;
+    //private String[] copilots;
+    private List<WishRequestDTO> wishRequestList;
 
 }

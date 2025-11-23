@@ -1,6 +1,7 @@
 package com.dearlavion.coreservice.wish;
 
 import java.util.Date;
+import java.util.List;
 
 public class WishDTO {
     private String id;
@@ -19,7 +20,9 @@ public class WishDTO {
     private Date updatedAt;
     private String copilotName;
     private String requestId;
-    private String[] requests;
+    //private String[] requests;
+    //private String[] copilots;
+    private List<WishRequestDTO> wishRequestList;
 
     public WishDTO() {}
 
@@ -56,6 +59,6 @@ public class WishDTO {
     public void setCopilotName(String copilotName) { this.copilotName = copilotName; }
     public String getRequestId() { return requestId; }
     public void setRequestId(String requestId) { this.requestId = requestId; }
-    public String[] getRequests() { return requests; }
-    public void setRequests(String[] requests) { this.requests = requests;}
+    public List<WishRequestDTO> getWishRequestList() { return wishRequestList; }
+    public void setWishRequestList(List<WishRequestDTO> wishRequestList) { this.wishRequestList = wishRequestList; }
 }

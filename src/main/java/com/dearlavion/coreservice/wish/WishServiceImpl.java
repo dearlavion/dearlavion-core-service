@@ -86,26 +86,35 @@ public class WishServiceImpl implements WishService {
         Wish wish = repo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Wish not found"));
 
-        // 1️⃣ Extract append operation
-        Object requestsAppend = updates.remove("requestId");
+        // 1️⃣ Extract request append operation
+        Object requestIdObj = updates.remove("requestId");
+        String requestId = requestIdObj != null ? requestIdObj.toString() : null;
 
-        // 2️⃣ Merge scalar fields using ObjectMapper
+        Object copilotNameObj = updates.remove("copilotName");
+        String copilotName = copilotNameObj != null ? copilotNameObj.toString() : null;
+
+        // 2️⃣ Merge scalar fields automatically into Wish
         objectMapper.updateValue(wish, updates);
 
-        // 3️⃣ Handle array append safely
-        if (requestsAppend instanceof String requestId) {
-            // Convert array -> list
-            List<String> list = wish.getRequests() == null
-                    ? new ArrayList<>()
-                    : new ArrayList<>(Arrays.asList(wish.getRequests()));
+        // 3️⃣ Append a new WishRequestDTO if requestId or copilotName exists
+        if (!copilotName.isBlank() && !requestId.isBlank()) {
 
-            // Add only if not duplicate
-            if (!list.contains(requestId)) {
-                list.add(requestId);
+            // Initialize list if null
+            if (wish.getWishRequestList() == null) {
+                wish.setWishRequestList(new ArrayList<>());
             }
 
-            // Set back as array
-            wish.setRequests(list.toArray(new String[0]));
+            // Prevent duplicate copilotName (industry best practice)
+            boolean alreadyExists = wish.getWishRequestList().stream()
+                    .anyMatch(wr -> copilotName != null && copilotName.equals(wr.getCopilotName()));
+
+            if (!alreadyExists) {
+                WishRequestDTO wr = new WishRequestDTO();
+                wr.setRequestId(requestId);
+                wr.setCopilotName(copilotName);
+
+                wish.getWishRequestList().add(wr);
+            }
         }
 
         // 4️⃣ Update timestamp
