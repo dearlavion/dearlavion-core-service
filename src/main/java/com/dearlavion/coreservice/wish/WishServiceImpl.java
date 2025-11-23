@@ -1,12 +1,12 @@
 package com.dearlavion.coreservice.wish;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class WishServiceImpl implements WishService {
@@ -15,6 +15,9 @@ public class WishServiceImpl implements WishService {
 
     @Autowired
     private ModelMapper mapper;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Override
     public Optional<WishDTO> findById(String id) {
@@ -76,4 +79,43 @@ public class WishServiceImpl implements WishService {
                 .map(e -> mapper.map(e, WishDTO.class))
                 .toList();
     }
+
+
+    @Override
+    public WishDTO patch(String id, Map<String, Object> updates) throws JsonMappingException {
+        Wish wish = repo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Wish not found"));
+
+        // 1️⃣ Extract append operation
+        Object requestsAppend = updates.remove("requestId");
+
+        // 2️⃣ Merge scalar fields using ObjectMapper
+        objectMapper.updateValue(wish, updates);
+
+        // 3️⃣ Handle array append safely
+        if (requestsAppend instanceof String requestId) {
+            // Convert array -> list
+            List<String> list = wish.getRequests() == null
+                    ? new ArrayList<>()
+                    : new ArrayList<>(Arrays.asList(wish.getRequests()));
+
+            // Add only if not duplicate
+            if (!list.contains(requestId)) {
+                list.add(requestId);
+            }
+
+            // Set back as array
+            wish.setRequests(list.toArray(new String[0]));
+        }
+
+        // 4️⃣ Update timestamp
+        wish.setUpdatedAt(new Date());
+
+        Wish saved = repo.save(wish);
+
+        return mapper.map(saved, WishDTO.class);
+    }
+
+
+
 }

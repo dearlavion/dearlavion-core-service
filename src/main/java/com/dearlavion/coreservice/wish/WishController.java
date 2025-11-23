@@ -1,10 +1,12 @@
 package com.dearlavion.coreservice.wish;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/wish")
@@ -33,5 +35,10 @@ public class WishController {
     @GetMapping("/id/{id}")
     public ResponseEntity<WishDTO> getById(@PathVariable String id) {
         return service.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    }
+
+    @PatchMapping("/{id}")
+    public WishDTO patch(@PathVariable String id, @RequestBody Map<String, Object> updates) throws JsonMappingException {
+        return service.patch(id, updates);
     }
 }
