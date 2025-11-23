@@ -80,51 +80,50 @@ public class WishServiceImpl implements WishService {
                 .toList();
     }
 
-
     @Override
     public WishDTO patch(String id, Map<String, Object> updates) throws JsonMappingException {
         Wish wish = repo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Wish not found"));
 
-        // 1️⃣ Extract request append operation
+        // Extract request operations
         Object requestIdObj = updates.remove("requestId");
         String requestId = requestIdObj != null ? requestIdObj.toString() : null;
 
         Object copilotNameObj = updates.remove("copilotName");
         String copilotName = copilotNameObj != null ? copilotNameObj.toString() : null;
 
-        // 2️⃣ Merge scalar fields automatically into Wish
+        Object removeRequestObj = updates.remove("removeRequest");
+        boolean removeRequest = removeRequestObj != null && Boolean.parseBoolean(removeRequestObj.toString());
+
+        // Merge other scalar fields
         objectMapper.updateValue(wish, updates);
 
-        // 3️⃣ Append a new WishRequestDTO if requestId or copilotName exists
-        if (!copilotName.isBlank() && !requestId.isBlank()) {
+        // Initialize list if null
+        if (wish.getWishRequestList() == null) {
+            wish.setWishRequestList(new ArrayList<>());
+        }
 
-            // Initialize list if null
-            if (wish.getWishRequestList() == null) {
-                wish.setWishRequestList(new ArrayList<>());
-            }
-
-            // Prevent duplicate copilotName (industry best practice)
+        if (removeRequest && requestId != null) {
+            // 🔹 Remove the matching WishRequestDTO
+            wish.getWishRequestList().removeIf(wr -> requestId.equals(wr.getRequestId()));
+        } else if (!copilotName.isBlank() && !requestId.isBlank()) {
+            // 🔹 Add new WishRequestDTO if not exists
             boolean alreadyExists = wish.getWishRequestList().stream()
-                    .anyMatch(wr -> copilotName != null && copilotName.equals(wr.getCopilotName()));
+                    .anyMatch(wr -> copilotName.equals(wr.getCopilotName()));
 
             if (!alreadyExists) {
                 WishRequestDTO wr = new WishRequestDTO();
                 wr.setRequestId(requestId);
                 wr.setCopilotName(copilotName);
-
                 wish.getWishRequestList().add(wr);
             }
         }
 
-        // 4️⃣ Update timestamp
+        // Update timestamp
         wish.setUpdatedAt(new Date());
 
         Wish saved = repo.save(wish);
 
         return mapper.map(saved, WishDTO.class);
     }
-
-
-
 }
