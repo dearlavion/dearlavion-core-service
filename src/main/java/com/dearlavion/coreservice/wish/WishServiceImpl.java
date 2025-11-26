@@ -1,5 +1,6 @@
 package com.dearlavion.coreservice.wish;
 
+import com.dearlavion.coreservice.request.RequestService;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.modelmapper.ModelMapper;
@@ -18,6 +19,9 @@ public class WishServiceImpl implements WishService {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private RequestService requestService;
 
     @Override
     public Optional<WishDTO> findById(String id) {
@@ -45,6 +49,8 @@ public class WishServiceImpl implements WishService {
 
         // 🔥 Optional: also set updatedAt = createdAt (good practice)
         entity.setUpdatedAt(entity.getCreatedAt());
+
+        entity.setStatus("OPEN");
 
         Wish saved = repo.save(entity);
         return mapper.map(saved, WishDTO.class);
@@ -92,8 +98,14 @@ public class WishServiceImpl implements WishService {
         Object copilotNameObj = updates.remove("copilotName");
         String copilotName = copilotNameObj != null ? copilotNameObj.toString() : null;
 
+        Object statusObj = updates.remove("status");
+        String status = statusObj != null ? statusObj.toString() : null;
+
         Object removeRequestObj = updates.remove("removeRequest");
         boolean removeRequest = removeRequestObj != null && Boolean.parseBoolean(removeRequestObj.toString());
+
+        Object wishCompleteObj = updates.remove("wishComplete");
+        boolean wishComplete = wishCompleteObj != null && Boolean.parseBoolean(wishCompleteObj.toString());
 
         // Merge other scalar fields
         objectMapper.updateValue(wish, updates);
@@ -103,27 +115,89 @@ public class WishServiceImpl implements WishService {
             wish.setWishRequestList(new ArrayList<>());
         }
 
-        if (removeRequest && requestId != null) {
-            // 🔹 Remove the matching WishRequestDTO
+        if (removeRequest) {
+            // 🔹 Remove the matching WishRequestDTO in WishRequestList[]
             wish.getWishRequestList().removeIf(wr -> requestId.equals(wr.getRequestId()));
-        } else if (!copilotName.isBlank() && !requestId.isBlank()) {
-            // 🔹 Add new WishRequestDTO if not exists
-            boolean alreadyExists = wish.getWishRequestList().stream()
-                    .anyMatch(wr -> copilotName.equals(wr.getCopilotName()));
-
-            if (!alreadyExists) {
-                WishRequestDTO wr = new WishRequestDTO();
-                wr.setRequestId(requestId);
-                wr.setCopilotName(copilotName);
-                wish.getWishRequestList().add(wr);
-            }
+        } else if (wishComplete) {
+            updateWishToComplete(wish);
+            /*
+            wish.getWishRequestList().forEach(wr -> {
+                if ("ONGOING".equals(wr.getStatus())) {
+                    wr.setStatus("COMPLETED");
+                } else {
+                    wr.setStatus("REJECTED");
+                }
+            });
+            wish.setStatus("COMPLETED");*/
+        } else {
+            updateWishRequestList(wish, requestId, copilotName, status);
         }
 
         // Update timestamp
         wish.setUpdatedAt(new Date());
-
         Wish saved = repo.save(wish);
 
         return mapper.map(saved, WishDTO.class);
     }
+
+    private void updateWishToComplete(Wish wish) {
+        wish.getWishRequestList().forEach(wr -> {
+            String newStatus = "ONGOING".equals(wr.getStatus())
+                    ? "COMPLETED"
+                    : "REJECTED";
+
+            wr.setStatus(newStatus);
+
+            // 🔥 update Request table also
+            Map<String, Object> updates = new HashMap<>();
+            updates.put("status", newStatus);
+
+            try {
+                this.requestService.patch(wr.getRequestId(), updates);
+            } catch (JsonMappingException e) {
+                // handle exception, e.g., log
+                e.printStackTrace();
+            }
+        });
+
+        wish.setStatus("COMPLETED");
+    }
+
+
+    private void updateWishRequestList(Wish wish, String requestId, String copilotName, String status) {
+        // Find request by requestId (NOT copilot name)
+        Optional<WishRequestDTO> wishRequest = wish.getWishRequestList().stream()
+                .filter(wr -> requestId != null && requestId.equals(wr.getRequestId()))
+                .findFirst();
+
+        if (wishRequest.isEmpty()) {
+            WishRequestDTO wr = new WishRequestDTO();
+            wr.setRequestId(requestId);
+            wr.setCopilotName(copilotName);
+            wr.setStatus(status);
+            wish.getWishRequestList().add(wr);
+        } else {
+            // Update wish request status only on existing
+            WishRequestDTO wr = wishRequest.get();
+
+            if (status != null) {
+                wr.setStatus(status);
+            }
+            updateWishStatus(wish);
+        }
+
+    }
+
+    private void updateWishStatus(Wish wish) {
+        Optional<WishRequestDTO> ongoing = wish.getWishRequestList().stream()
+                .filter(wr -> "ONGOING".equals(wr.getStatus()))
+                .findFirst();
+
+        if (!ongoing.isEmpty()) {
+            wish.setStatus("ONGOING");
+        } else {
+            wish.setStatus("OPEN");
+        }
+    }
+
 }

@@ -1,11 +1,14 @@
 package com.dearlavion.coreservice.request;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -16,6 +19,9 @@ public class RequestServiceImpl implements RequestService {
 
     @Autowired
     private ModelMapper mapper;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Override
     public Optional<RequestDTO> findById(String id) {
@@ -73,4 +79,25 @@ public class RequestServiceImpl implements RequestService {
     public void delete(String id) {
         repo.deleteById(id);
     }
+
+    @Override
+    public RequestDTO patch(String id, Map<String, Object> updates) throws JsonMappingException {
+        Request request = repo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Request not found"));
+
+        Object statusObj = updates.remove("status");
+        String status = statusObj != null ? statusObj.toString() : null;
+
+        // Merge other scalar fields
+        objectMapper.updateValue(request, updates);
+        if (!status.isBlank()) {
+            request.setStatus(status);
+        }
+        // Update timestamp
+        request.setUpdatedAt(new Date());
+        Request saved = repo.save(request);
+
+        return mapper.map(saved, RequestDTO.class);
+    }
+
 }

@@ -18,10 +18,6 @@ public class WishDTO {
     private Date endDate;
     private Date createdAt;
     private Date updatedAt;
-    private String copilotName;
-    private String requestId;
-    //private String[] requests;
-    //private String[] copilots;
     private List<WishRequestDTO> wishRequestList;
 
     public WishDTO() {}
@@ -55,10 +51,6 @@ public class WishDTO {
     public void setCreatedAt(Date createdAt) { this.createdAt = createdAt; }
     public Date getUpdatedAt() { return this.updatedAt; }
     public void setUpdatedAt(Date updatedAt) { this.updatedAt = updatedAt; }
-    public String getCopilotName() { return copilotName; }
-    public void setCopilotName(String copilotName) { this.copilotName = copilotName; }
-    public String getRequestId() { return requestId; }
-    public void setRequestId(String requestId) { this.requestId = requestId; }
     public List<WishRequestDTO> getWishRequestList() { return wishRequestList; }
     public void setWishRequestList(List<WishRequestDTO> wishRequestList) { this.wishRequestList = wishRequestList; }
 }

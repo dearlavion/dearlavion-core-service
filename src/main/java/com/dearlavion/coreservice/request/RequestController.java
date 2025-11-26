@@ -1,10 +1,13 @@
 package com.dearlavion.coreservice.request;
 
+import com.dearlavion.coreservice.wish.WishDTO;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/request")
@@ -44,5 +47,10 @@ public class RequestController {
     @GetMapping("/user/{userId}")
     public List<RequestDTO> getAllByUser(@PathVariable String userId) {
         return service.findAllByUsername(userId);
+    }
+
+    @PatchMapping("/{id}")
+    public RequestDTO patch(@PathVariable String id, @RequestBody Map<String, Object> updates) throws JsonMappingException {
+        return service.patch(id, updates);
     }
 }

@@ -30,10 +30,6 @@ public class Wish {
     private Date updatedAt; // Updated timestamp
     private String rateType;
     private String amount;
-    private String copilotName;
-    private String requestId;
-    //private String[] requests;
-    //private String[] copilots;
     private List<WishRequestDTO> wishRequestList;
 
 }
