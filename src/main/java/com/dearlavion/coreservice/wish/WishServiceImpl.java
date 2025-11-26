@@ -107,6 +107,10 @@ public class WishServiceImpl implements WishService {
         Object wishCompleteObj = updates.remove("wishComplete");
         boolean wishComplete = wishCompleteObj != null && Boolean.parseBoolean(wishCompleteObj.toString());
 
+        Object wishReOpenObj = updates.remove("wishReOpen");
+        boolean wishReOpen = wishReOpenObj != null && Boolean.parseBoolean(wishReOpenObj.toString());
+
+
         // Merge other scalar fields
         objectMapper.updateValue(wish, updates);
 
@@ -120,16 +124,10 @@ public class WishServiceImpl implements WishService {
             wish.getWishRequestList().removeIf(wr -> requestId.equals(wr.getRequestId()));
         } else if (wishComplete) {
             updateWishToComplete(wish);
-            /*
-            wish.getWishRequestList().forEach(wr -> {
-                if ("ONGOING".equals(wr.getStatus())) {
-                    wr.setStatus("COMPLETED");
-                } else {
-                    wr.setStatus("REJECTED");
-                }
-            });
-            wish.setStatus("COMPLETED");*/
-        } else {
+        } else if (wishReOpen) {
+            reOpenWish(wish);
+        }
+        else {
             updateWishRequestList(wish, requestId, copilotName, status);
         }
 
@@ -138,6 +136,11 @@ public class WishServiceImpl implements WishService {
         Wish saved = repo.save(wish);
 
         return mapper.map(saved, WishDTO.class);
+    }
+
+    private void reOpenWish(Wish wish) {
+        // Reset the wish status
+        wish.setStatus("OPEN");
     }
 
     private void updateWishToComplete(Wish wish) {
