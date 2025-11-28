@@ -1,7 +1,10 @@
 package com.dearlavion.coreservice.wish;
 
+import com.dearlavion.coreservice.common.PageResponse;
+import com.dearlavion.coreservice.wish.search.WishSearchRequest;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,5 +43,16 @@ public class WishController {
     @PatchMapping("/{id}")
     public WishDTO patch(@PathVariable String id, @RequestBody Map<String, Object> updates) throws JsonMappingException {
         return service.patch(id, updates);
+    }
+
+    /*@PostMapping("/search")
+    public Page<Wish> search(@RequestBody WishSearchRequest request) {
+        return service.search(request);
+    }*/
+
+    @PostMapping("/search")
+    public PageResponse<Wish> search(@RequestBody WishSearchRequest request) {
+        Page<Wish> page = service.search(request);
+        return new PageResponse<>(page);
     }
 }

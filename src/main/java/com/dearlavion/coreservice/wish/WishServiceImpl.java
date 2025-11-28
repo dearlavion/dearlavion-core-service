@@ -1,10 +1,12 @@
 package com.dearlavion.coreservice.wish;
 
 import com.dearlavion.coreservice.request.RequestService;
+import com.dearlavion.coreservice.wish.search.WishSearchRequest;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -201,6 +203,11 @@ public class WishServiceImpl implements WishService {
         } else {
             wish.setStatus("OPEN");
         }
+    }
+
+    @Override
+    public Page<Wish> search(WishSearchRequest req) {
+        return repo.searchWishes(req);
     }
 
 }

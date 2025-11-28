@@ -28,8 +28,22 @@ public class SecurityConfig {
                 .csrf().disable()
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/actuator/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                        .requestMatchers("/api/wish/**").authenticated()
+                        //Public
+                        .requestMatchers("/actuator/**", "/swagger-ui/**", "/v3/api-docs/**")
+                        .permitAll()
+                        .requestMatchers(
+                                "/api/wish/search",    //public wish endpoints
+                                "/api/auth/**" )           //login/register
+                        .permitAll()
+                        // Everything else under /api/wish/** requires login
+                       .requestMatchers("/api/wish/**").authenticated()
+                        // Portfolio — matches Angular protected routes
+                       .requestMatchers("/api/portfolio/**").authenticated()
+                        // Request — matches Angular protected routes
+                       .requestMatchers("/api/request/**").authenticated()
+                        // Profile — matches Angular protected route
+                       .requestMatchers("/api/user/profile/**").authenticated()
+                        // Anything else allowed (optional)
                         .anyRequest().permitAll()
                 )
                 .addFilterBefore(tokenVerificationFilter, UsernamePasswordAuthenticationFilter.class);
