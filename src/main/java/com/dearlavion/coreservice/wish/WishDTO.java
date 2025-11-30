@@ -1,5 +1,6 @@
 package com.dearlavion.coreservice.wish;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -13,7 +14,7 @@ public class WishDTO {
     private String[] categories;
     private String status;
     private String rateType;
-    private String amount;
+    private BigDecimal amount;
     private Date startDate;
     private Date endDate;
     private Date createdAt;
@@ -26,8 +27,8 @@ public class WishDTO {
     public void setCategories(String[] categories) {this.categories = categories;}
     public String getRateType() { return rateType; }
     public void setRateType(String rateType) { this.rateType = rateType; }
-    public String getAmount() {return amount;}
-    public void setAmount(String amount) {this.amount = amount;}
+    public BigDecimal getAmount() { return amount; }
+    public void setAmount(BigDecimal amount) { this.amount = amount; }
     public String getId() { return this.id; }
     public void setId(String id) { this.id = id; }
     public String getUsername() { return username; }

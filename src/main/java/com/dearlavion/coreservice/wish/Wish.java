@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -29,7 +31,7 @@ public class Wish {
     private Date createdAt; // Created timestamp
     private Date updatedAt; // Updated timestamp
     private String rateType;
-    private String amount;
+    private BigDecimal amount;
     private List<WishRequestDTO> wishRequestList;
 
 }

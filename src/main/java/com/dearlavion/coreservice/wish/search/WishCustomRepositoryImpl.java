@@ -2,6 +2,7 @@ package com.dearlavion.coreservice.wish.search;
 
 import lombok.RequiredArgsConstructor;
 import com.dearlavion.coreservice.wish.Wish;
+import org.bson.types.Decimal128;
 import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.*;
@@ -37,8 +38,19 @@ public class WishCustomRepositoryImpl implements WishCustomRepository {
         if (req.getStatus() != null && !req.getStatus().isEmpty())
             criteriaList.add(Criteria.where("status").is(req.getStatus()));
 
-        if (req.getRateType() != null && !req.getRateType().isEmpty())
+        if (req.getRateType() != null && !req.getRateType().isEmpty()) {
             criteriaList.add(Criteria.where("rateType").is(req.getRateType()));
+            // Amount Filters (only when PAID)
+
+            if ("PAID".equals(req.getRateType())) {
+                if (req.getAmountFrom() != null) {
+                    criteriaList.add(Criteria.where("amount").gte(new Decimal128(req.getAmountFrom())));
+                }
+                if (req.getAmountTo() != null) {
+                    criteriaList.add(Criteria.where("amount").lte(new Decimal128(req.getAmountTo())));
+                }
+            }
+        }
 
         if (req.getUsername() != null && !req.getUsername().isEmpty())
             criteriaList.add(Criteria.where("username").is(req.getUsername()));
