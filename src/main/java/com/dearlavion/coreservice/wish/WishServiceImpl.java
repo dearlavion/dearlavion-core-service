@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 @Service
@@ -37,6 +38,8 @@ public class WishServiceImpl implements WishService {
 
     @Override
     public WishDTO create(WishDTO dto) {
+        validate(dto);
+
         // Prevent empty string ID (Mongo will treat it as provided)
         if (dto.getId() == null || dto.getId().isBlank()) {
             dto.setId(null);
@@ -60,6 +63,7 @@ public class WishServiceImpl implements WishService {
 
     @Override
     public WishDTO update(String id, WishDTO dto) {
+        validate(dto);
         return repo.findById(id).map(existing -> {
             // Map incoming fields into existing entity
             mapper.map(dto, existing);
@@ -208,6 +212,20 @@ public class WishServiceImpl implements WishService {
     @Override
     public Page<Wish> search(WishSearchRequest req) {
         return repo.searchWishes(req);
+    }
+
+    private void validate(WishDTO dto) {
+        if ("PAID".equals(dto.getRateType())) {
+            if (dto.getAmount() == null) {
+                throw new IllegalArgumentException("Amount must be provided for PAID wishes");
+            }
+            if (dto.getAmount().compareTo(BigDecimal.ZERO) < 0) {
+                throw new IllegalArgumentException("Amount cannot be negative");
+            }
+        } else {
+            // For FREE wishes, ensure amount is null
+            dto.setAmount(null);
+        }
     }
 
 }
