@@ -64,10 +64,20 @@ public class WishCustomRepositoryImpl implements WishCustomRepository {
         // -------------------------------------------------------------
         Date now = new Date();
 
-        Date startDateFrom = now; // default = today
+        // Default: show wishes from the past 6 months
+        Date sixMonthsAgo = new Date(now.getTime() - 180L * 24 * 60 * 60 * 1000);
+        Date startDateFrom = sixMonthsAgo;
+
+        // Override if user provided a filter
         if (req.getStartDateFrom() != null) {
             startDateFrom = Date.from(req.getStartDateFrom());
         }
+
+        // default = today, will hide old wishes
+        /*Date startDateFrom = now;
+        if (req.getStartDateFrom() != null) {
+            startDateFrom = Date.from(req.getStartDateFrom());
+        }*/
 
         Date startDateTo;
         if (req.getStartDateTo() != null) {
