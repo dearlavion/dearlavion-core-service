@@ -32,7 +32,8 @@ public class SecurityConfig {
                         .requestMatchers("/actuator/**", "/swagger-ui/**", "/v3/api-docs/**")
                         .permitAll()
                         .requestMatchers(
-                                "/api/wish/search",    //public wish endpoints
+                                "/api/wish/search",//public wish endpoints
+                                "/api/event/search",//public event endpoints
                                 "/api/auth/**" )           //login/register
                         .permitAll()
                         // Everything else under /api/wish/** requires login
@@ -43,6 +44,8 @@ public class SecurityConfig {
                        .requestMatchers("/api/request/**").authenticated()
                         // Profile — matches Angular protected route
                        .requestMatchers("/api/user/profile/**").authenticated()
+                        // Event — matches Angular protected route
+                        .requestMatchers("/api/event/**").authenticated()
                         // Anything else allowed (optional)
                         .anyRequest().permitAll()
                 )
