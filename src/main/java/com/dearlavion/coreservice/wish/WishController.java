@@ -45,11 +45,6 @@ public class WishController {
         return service.patch(id, updates);
     }
 
-    /*@PostMapping("/search")
-    public Page<Wish> search(@RequestBody WishSearchRequest request) {
-        return service.search(request);
-    }*/
-
     @PostMapping("/search")
     public PageResponse<Wish> search(@RequestBody WishSearchRequest request) {
         Page<Wish> page = service.search(request);
