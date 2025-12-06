@@ -28,25 +28,19 @@ public class SecurityConfig {
                 .csrf().disable()
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        //Public
-                        .requestMatchers("/actuator/**", "/swagger-ui/**", "/v3/api-docs/**")
-                        .permitAll()
-                        .requestMatchers(
-                                "/api/wish/search",//public wish endpoints
-                                "/api/event/search",//public event endpoints
-                                "/api/auth/**" )           //login/register
-                        .permitAll()
-                        // Everything else under /api/wish/** requires login
-                       .requestMatchers("/api/wish/**").authenticated()
-                        // Portfolio — matches Angular protected routes
-                       .requestMatchers("/api/portfolio/**").authenticated()
-                        // Request — matches Angular protected routes
-                       .requestMatchers("/api/request/**").authenticated()
-                        // Profile — matches Angular protected route
-                       .requestMatchers("/api/user/profile/**").authenticated()
-                        // Event — matches Angular protected route
+                        // SPRING
+                        .requestMatchers("/actuator/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        // PUBLIC
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/wish/search").permitAll()
+                        .requestMatchers("/api/event/search").permitAll()
+                        // AUTHENTICATED
+                        .requestMatchers("/api/wish/**").authenticated()
+                        .requestMatchers("/api/portfolio/**").authenticated()
+                        .requestMatchers("/api/request/**").authenticated()
+                        .requestMatchers("/api/user/profile/**").authenticated()
                         .requestMatchers("/api/event/**").authenticated()
-                        // Anything else allowed (optional)
+                        // EVERYTHING ELSE
                         .anyRequest().permitAll()
                 )
                 .addFilterBefore(tokenVerificationFilter, UsernamePasswordAuthenticationFilter.class);
