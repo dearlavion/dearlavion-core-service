@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/wish")
+@RequestMapping("/core/wish")
 public class WishController {
     @Autowired
     private WishService service;

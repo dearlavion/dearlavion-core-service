@@ -8,7 +8,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/api/social")
+@RequestMapping("/core/social")
 public class SocialController {
     @Autowired
     private SocialService service;

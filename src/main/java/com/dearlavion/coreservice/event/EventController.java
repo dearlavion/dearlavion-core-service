@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/event")
+@RequestMapping("/core/event")
 public class EventController {
 
     @Autowired

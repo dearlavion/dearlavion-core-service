@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/feedback")
+@RequestMapping("/core/feedback")
 public class FeedbackController {
     @Autowired
     private FeedbackService service;

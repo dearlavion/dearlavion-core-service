@@ -31,15 +31,15 @@ public class SecurityConfig {
                         // SPRING
                         .requestMatchers("/actuator/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         // PUBLIC
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/wish/search").permitAll()
-                        .requestMatchers("/api/event/search").permitAll()
+                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/core/wish/search").permitAll()
+                        .requestMatchers("/core/event/search").permitAll()
                         // AUTHENTICATED
-                        .requestMatchers("/api/wish/**").authenticated()
-                        .requestMatchers("/api/portfolio/**").authenticated()
-                        .requestMatchers("/api/request/**").authenticated()
-                        .requestMatchers("/api/user/profile/**").authenticated()
-                        .requestMatchers("/api/event/**").authenticated()
+                        .requestMatchers("/core/wish/**").authenticated()
+                        .requestMatchers("/core/portfolio/**").authenticated()
+                        .requestMatchers("/core/request/**").authenticated()
+                        .requestMatchers("/core/user/profile/**").authenticated()
+                        .requestMatchers("/core/event/**").authenticated()
                         // EVERYTHING ELSE
                         .anyRequest().permitAll()
                 )

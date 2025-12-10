@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/reputation")
+@RequestMapping("/core/reputation")
 public class ReputationController {
     @Autowired
     private ReputationService service;
