@@ -15,7 +15,7 @@ import java.util.Optional;
 public class RequestServiceImpl implements RequestService {
 
     @Autowired
-    private RequestRepository repo;
+    private RequestRepository repository;
 
     @Autowired
     private ModelMapper mapper;
@@ -25,23 +25,7 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public Optional<RequestDTO> findById(String id) {
-        return repo.findById(id).map(e -> mapper.map(e, RequestDTO.class));
-    }
-
-    @Override
-    public List<RequestDTO> findAllByWishId(String wishId) {
-        return repo.findAllByWishId(wishId)
-                .stream()
-                .map(e -> mapper.map(e, RequestDTO.class))
-                .toList();
-    }
-
-    @Override
-    public List<RequestDTO> findAllByUsername(String userId) {
-        return repo.findAllByUsername(userId)
-                .stream()
-                .map(e -> mapper.map(e, RequestDTO.class))
-                .toList();
+        return repository.findById(id).map(e -> mapper.map(e, RequestDTO.class));
     }
 
     @Override
@@ -55,13 +39,13 @@ public class RequestServiceImpl implements RequestService {
         entity.setCreatedAt(new Date());
         entity.setUpdatedAt(entity.getCreatedAt());
 
-        Request saved = repo.save(entity);
+        Request saved = repository.save(entity);
         return mapper.map(saved, RequestDTO.class);
     }
 
     @Override
     public RequestDTO update(String id, RequestDTO dto) {
-        return repo.findById(id).map(existing -> {
+        return repository.findById(id).map(existing -> {
 
             mapper.map(dto, existing);
             existing.setUpdatedAt(new Date());
@@ -69,7 +53,7 @@ public class RequestServiceImpl implements RequestService {
             //force replace portfolios instead of merging
             existing.setPortfolios(dto.getPortfolios());
 
-            Request saved = repo.save(existing);
+            Request saved = repository.save(existing);
             return mapper.map(saved, RequestDTO.class);
 
         }).orElseThrow(() -> new RuntimeException("Request not found"));
@@ -77,12 +61,12 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public void delete(String id) {
-        repo.deleteById(id);
+        repository.deleteById(id);
     }
 
     @Override
     public RequestDTO patch(String id, Map<String, Object> updates) throws JsonMappingException {
-        Request request = repo.findById(id)
+        Request request = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Request not found"));
 
         Object statusObj = updates.remove("status");
@@ -95,9 +79,20 @@ public class RequestServiceImpl implements RequestService {
         }
         // Update timestamp
         request.setUpdatedAt(new Date());
-        Request saved = repo.save(request);
+        Request saved = repository.save(request);
 
         return mapper.map(saved, RequestDTO.class);
+    }
+
+    @Override
+    public List<RequestDTO> findUserRequests(String username, String type) {
+        List<Request> requests = repository.findByUsernameAndRequestType(username, type);
+
+        // Convert to DTO
+        return requests
+            .stream()
+            .map(e -> mapper.map(e, RequestDTO.class))
+            .toList();
     }
 
 }

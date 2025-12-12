@@ -1,6 +1,5 @@
 package com.dearlavion.coreservice.request;
 
-import com.dearlavion.coreservice.wish.WishDTO;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -39,18 +38,19 @@ public class RequestController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/wish/{wishId}")
-    public List<RequestDTO> getAllByWish(@PathVariable String wishId) {
-        return service.findAllByWishId(wishId);
-    }
-
-    @GetMapping("/user/{userId}")
-    public List<RequestDTO> getAllByUser(@PathVariable String userId) {
-        return service.findAllByUsername(userId);
-    }
-
     @PatchMapping("/{id}")
     public RequestDTO patch(@PathVariable String id, @RequestBody Map<String, Object> updates) throws JsonMappingException {
         return service.patch(id, updates);
     }
+
+    @GetMapping("/{username}/{type}")
+    public List<RequestDTO> getUserRequests(
+            @PathVariable String username,
+            @PathVariable String type
+    ) {
+        return service.findUserRequests(username, type);
+    }
+
+
+
 }

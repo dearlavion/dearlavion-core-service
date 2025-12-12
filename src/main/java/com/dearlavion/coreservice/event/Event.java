@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class Event {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private String rateType;            // FREE | PAID
-    private String amount;              // optional
+    private BigDecimal amount;              // optional
     private String image;               // URL or base64
     private Integer participantLimit;   // nullable
     private Integer participantCount;

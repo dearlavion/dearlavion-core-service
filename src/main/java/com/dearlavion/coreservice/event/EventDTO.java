@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class EventDTO {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private String rateType;
-    private String amount;
+    private BigDecimal amount;
     private String image;
     private Integer participantLimit;
     private Integer participantCount;

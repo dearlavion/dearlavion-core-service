@@ -7,8 +7,5 @@ import java.util.List;
 
 @Repository
 public interface RequestRepository extends MongoRepository<Request, String> {
-
-    List<Request> findAllByWishId(String wishId);
-
-    List<Request> findAllByUsername(String userId);
+    List<Request> findByUsernameAndRequestType(String username, String requestType);
 }

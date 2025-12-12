@@ -9,10 +9,9 @@ import java.util.Optional;
 public interface RequestService {
 
     Optional<RequestDTO> findById(String id);
-    List<RequestDTO> findAllByWishId(String wishId);
-    List<RequestDTO> findAllByUsername(String userId);
     RequestDTO create(RequestDTO dto);
     RequestDTO update(String id, RequestDTO dto);
     void delete(String id);
     RequestDTO patch(String id, Map<String, Object> updates) throws JsonMappingException;
+    List<RequestDTO> findUserRequests(String username, String type);
 }

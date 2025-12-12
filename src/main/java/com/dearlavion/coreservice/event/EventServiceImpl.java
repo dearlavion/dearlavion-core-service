@@ -7,6 +7,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -96,7 +97,7 @@ public class EventServiceImpl implements EventService {
                     event.setRateType((String) value);
 
             case "amount" ->
-                    event.setAmount((String) value);
+                    event.setAmount((BigDecimal) value);
 
             case "image" ->
                     event.setImage((String) value);
