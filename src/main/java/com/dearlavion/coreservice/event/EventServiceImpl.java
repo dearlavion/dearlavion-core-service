@@ -2,13 +2,15 @@ package com.dearlavion.coreservice.event;
 
 import com.dearlavion.coreservice.event.search.EventSearchRequest;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -18,10 +20,13 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class EventServiceImpl implements EventService {
 
-    private final EventRepository eventRepository;
-    private final ModelMapper mapper;
+    @Autowired
+    private EventRepository eventRepository;
+    @Autowired
+    private ModelMapper mapper;
+    @Autowired
+    private ObjectMapper objectMapper;
 
-    // CREATE EVENT
     @Override
     public EventDTO create(EventDTO dto) {
         Event event = mapper.map(dto, Event.class);
@@ -57,63 +62,9 @@ public class EventServiceImpl implements EventService {
         return mapper.map(saved, EventDTO.class);
     }
 
-    // PARTIAL UPDATE (PATCH)
-    @Override
-    public EventDTO patch(String id, Map<String, Object> updates) throws JsonMappingException {
-        Event event = eventRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Event not found"));
-
-        updates.forEach((key, value) -> applyPatch(event, key, value));
-
-        event.setUpdatedAt(LocalDateTime.now());
-        Event saved = eventRepository.save(event);
-
-        return mapper.map(saved, EventDTO.class);
-    }
-
     @Override
     public Page<Event> search(EventSearchRequest request) {
         return eventRepository.searchEvents(request);
-    }
-
-    private void applyPatch(Event event, String key, Object value) {
-
-        switch (key) {
-
-            case "title" -> event.setTitle((String) value);
-            case "body" -> event.setBody((String) value);
-            case "location" -> event.setLocation((String) value);
-
-            case "categories" ->
-                    event.setCategories((List<String>) value);
-
-            case "startDate" ->
-                    event.setStartDate(LocalDateTime.parse(value.toString()));
-
-            case "endDate" ->
-                    event.setEndDate(LocalDateTime.parse(value.toString()));
-
-            case "rateType" ->
-                    event.setRateType((String) value);
-
-            case "amount" ->
-                    event.setAmount((BigDecimal) value);
-
-            case "image" ->
-                    event.setImage((String) value);
-
-            case "participantLimit" ->
-                    event.setParticipantLimit((Integer) value);
-
-            case "status" ->
-                    event.setStatus((String) value);
-
-            case "eventRequestList" ->
-                    event.setEventRequestList((List<EventRequestDTO>) value);
-
-            default ->
-                    System.out.println("Unknown patch field: " + key);
-        }
     }
 
     @Override
@@ -134,35 +85,45 @@ public class EventServiceImpl implements EventService {
                 .toList();
     }
 
-
-    /*
     @Override
-    public EventDTO addParticipant(String eventId, String userId) {
-        Event event = eventRepository.findById(eventId)
+    public EventDTO patch(String id, Map<String, Object> updates) throws JsonMappingException {
+        Event event = eventRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Event not found"));
 
-        // Check max capacity
-        if (event.getParticipantLimit() != null &&
-                event.getParticipantCount() >= event.getParticipantLimit()) {
-            throw new RuntimeException("Event is full");
-        }
+        // Extract request operations:
+        Object requestIdObj = updates.remove("requestId");
+        String requestId = requestIdObj != null ? requestIdObj.toString() : null;
 
+        Object wisherNameObj = updates.remove("wisherName");
+        String wisherName = wisherNameObj != null ? wisherNameObj.toString() : null;
+
+        Object statusObj = updates.remove("status");
+        String status = statusObj != null ? statusObj.toString() : null;
+
+        Object removeRequestObj = updates.remove("removeRequest");
+        boolean removeRequest = removeRequestObj != null && Boolean.parseBoolean(removeRequestObj.toString());
+
+        Object eventCompleteObj = updates.remove("eventComplete");
+        boolean eventComplete = eventCompleteObj != null && Boolean.parseBoolean(eventCompleteObj.toString());
+
+        Object eventReOpenObj = updates.remove("eventReOpen");
+        boolean eventReOpen = eventReOpenObj != null && Boolean.parseBoolean(eventReOpenObj.toString());
+
+        // Merge normal fields
+        objectMapper.updateValue(event, updates);
+
+        // Initialize list if null
         if (event.getEventRequestList() == null)
             event.setEventRequestList(new ArrayList<>());
 
-        // Add participant record
-        EventRequestDTO req = new EventRequestDTO();
-        req.setUserId(userId);
-        req.setStatus("ACCEPTED");
-        req.setCreatedAt(LocalDateTime.now());
-
-        event.getEventRequestList().add(req);
-
-        event.setParticipantCount(event.getParticipantCount() + 1);
-
-        if (event.getParticipantLimit() != null &&
-                event.getParticipantCount() >= event.getParticipantLimit()) {
-            event.setStatus("FULL");
+        if (removeRequest) {
+            event.getEventRequestList().removeIf(er -> requestId.equals(er.getRequestId()));
+        } else if (eventComplete) {
+            updateEventToComplete(event);
+        } else if (eventReOpen) {
+            reOpenEvent(event);
+        } else {
+            updateEventRequestList(event, requestId, wisherName, status);
         }
 
         event.setUpdatedAt(LocalDateTime.now());
@@ -171,7 +132,62 @@ public class EventServiceImpl implements EventService {
         return mapper.map(saved, EventDTO.class);
     }
 
-     */
+    private void reOpenEvent(Event event) {
+        event.setStatus("OPEN");
+    }
+
+    private void updateEventToComplete(Event event) {
+        event.getEventRequestList().forEach(er -> {
+            String newStatus = "ONGOING".equals(er.getStatus())
+                    ? "COMPLETED"
+                    : "REJECTED";
+
+            er.setStatus(newStatus);
+        });
+
+        event.setStatus("COMPLETED");
+    }
+
+    private void updateEventRequestList(Event event, String requestId, String wisherName, String status) {
+
+        Optional<EventRequestDTO> existing = event.getEventRequestList().stream()
+                .filter(er -> er.getRequestId().equals(requestId))
+                .findFirst();
+
+        if (existing.isEmpty()) {
+
+            EventRequestDTO er = new EventRequestDTO();
+            er.setRequestId(requestId);
+            er.setWisherName(wisherName);
+            er.setStatus(status);
+
+            event.getEventRequestList().add(er);
+            //Update participant count
+            Integer count = event.getParticipantCount();
+            event.setParticipantCount(count + 1);
+
+        } else {
+            EventRequestDTO er = existing.get();
+            if (status != null) er.setStatus(status);
+        }
+
+        updateEventStatus(event);
+    }
+
+    private void updateEventStatus(Event event) {
+
+        boolean anyOngoing = event.getEventRequestList().stream()
+                .anyMatch(er -> "ONGOING".equals(er.getStatus()));
+
+        if (anyOngoing) {
+            event.setStatus("ONGOING");
+        } else {
+            event.setStatus("OPEN");
+        }
+    }
+
+
+
 
 
 }
