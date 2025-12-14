@@ -164,11 +164,19 @@ public class EventServiceImpl implements EventService {
             event.getEventRequestList().add(er);
             //Update participant count
             Integer count = event.getParticipantCount();
-            event.setParticipantCount(count + 1);
+            if("ONGOING".equals(status)) {
+                event.setParticipantCount(count + 1);
+            }
 
         } else {
             EventRequestDTO er = existing.get();
             if (status != null) er.setStatus(status);
+            Integer count = event.getParticipantCount();
+            if ("CANCELLED".equals(status)) {
+                event.setParticipantCount(count - 1);
+            } else if("ONGOING".equals(status)) {
+                event.setParticipantCount(count + 1);
+            }
         }
 
         updateEventStatus(event);
