@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - develop
+      - production
 
 jobs:
   deploy-core:
@@ -39,4 +39,4 @@ jobs:
           ansible-playbook \
             -i ansible/inventory/hosts.ini \
             ansible/playbook/dearlavion-app.yml \
-            -e "deploy_service=core env=dev ssh_user=baish ssh_host=157.173.97.37"
+            -e "deploy_service=core env=prod ssh_user=baish ssh_host=157.173.97.37"
