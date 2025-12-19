@@ -1,0 +1,34 @@
+name: Deploy Core Service to DEV
+
+on:
+  push:
+    paths:
+      - "dearlavion-app/dearlavion-core-service/**"
+  workflow_dispatch:   # Manual trigger
+
+jobs:
+  deploy-auth:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Checkout repository
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      # 2️⃣ Setup SSH to DEV
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEV_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H 157.173.97.37 >> ~/.ssh/known_hosts
+
+      # 3️⃣ Build & deploy service
+      - name: Deploy Authentication Service
+        run: |
+          ssh -i ~/.ssh/id_rsa baish@157.173.97.37 << 'EOF'
+            cd /home/baish/dearlavion-projects/dearlavion-app
+            # Rebuild only auth service
+            docker-compose -f docker-compose.dev.yml build auth-service
+            docker-compose -f docker-compose.dev.yml up -d auth-service
+          EOF
