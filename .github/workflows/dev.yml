@@ -18,8 +18,11 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: dearlavion/dearlavion-projects
-          path: ansible
+          path: dearlavion-projects
           token: ${{ secrets.DEARLAVION_PAT }}
+
+      #- name: Debug Ansible repo structure
+      #  run: ls -R ansible
 
       - name: Setup SSH
         run: |
@@ -37,6 +40,6 @@ jobs:
       - name: Deploy Core Service
         run: |
           ansible-playbook \
-            -i ansible/inventory/hosts.ini \
-            ansible/playbook/dearlavion-app.yml \
+            -i dearlavion-projects/ansible/inventory/hosts.ini \
+            dearlavion-projects/ansible/playbook/dearlavion-app.yml \
             -e "deploy_service=core env=dev ssh_user=baish ssh_host=157.173.97.37"
