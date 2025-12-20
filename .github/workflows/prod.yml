@@ -1,4 +1,4 @@
-name: Deploy Core Service to DEV
+name: Deploy Core Service to PROD
 
 on:
   workflow_dispatch:
