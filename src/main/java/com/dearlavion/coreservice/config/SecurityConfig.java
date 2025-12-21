@@ -53,6 +53,12 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOriginPatterns(List.of(
+                // 🔐 Dev
+                "https://dearlavion.site",
+                "https://www.dearlavion.site",
+                "http://localhost",
+                "http://127.0.0.1",
+                "http://157.173.97.37",
                 "http://localhost:4200",
                 "https://*.ngrok.pizza"
         )); // your Angular app
