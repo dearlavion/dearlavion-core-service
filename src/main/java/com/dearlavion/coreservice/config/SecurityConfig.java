@@ -54,6 +54,7 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOriginPatterns(List.of(
                 // 🔐 Dev
+                "http://dearlavion.site",
                 "https://dearlavion.site",
                 "https://www.dearlavion.site",
                 "http://localhost",
