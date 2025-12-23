@@ -10,7 +10,8 @@ spring:
       WRITE_DATES_AS_TIMESTAMPS: false
 
 server:
-  port: 8081
+  port: 8082
+  address: 0.0.0.0
 
 springdoc:
   api-docs:

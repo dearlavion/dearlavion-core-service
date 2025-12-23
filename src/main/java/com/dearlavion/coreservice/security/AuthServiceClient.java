@@ -9,7 +9,7 @@ import java.util.Map;
 public class AuthServiceClient {
 
     private final RestTemplate restTemplate = new RestTemplate();
-    private final String authServiceUrl = "http://localhost:8082/auth/verify";
+    private final String authServiceUrl = "http://localhost:8081/auth/verify";
 
     public AuthVerificationResponse verify(String token) {
         try {
