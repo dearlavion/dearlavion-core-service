@@ -20,6 +20,11 @@ RUN mvn clean package -DskipTests
 FROM eclipse-temurin:21-jre
 WORKDIR /app
 
+# Copy the JAR from the build stage
 COPY --from=build /app/target/*.jar app.jar
 
+# ✅ Set the Spring profile to dev
+ENV SPRING_PROFILES_ACTIVE=dev
+
+# Run the application
 CMD ["java", "-jar", "app.jar"]
