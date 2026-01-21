@@ -3,6 +3,8 @@ spring:
     mongodb:
       uri: mongodb+srv://admin:admin@dearlavioncluster.xnanadi.mongodb.net/core-service?retryWrites=true&w=majority&appName=DearLavionCluster
       auto-index-creation: true
+      socket-timeout: 20000
+      connect-timeout: 10000
   main:
     allow-circular-references: true
   jackson:
