@@ -1,7 +1,7 @@
 spring:
   data:
     mongodb:
-      uri: mongodb+srv://admin:admin@dearlavioncluster.xnanadi.mongodb.net/core-service?retryWrites=true&w=majority&appName=DearLavionCluster&serverSelectionTimeoutMS=10000&connectTimeoutMS=10000&socketTimeoutMS=10000&maxIdleTimeMS=60000&heartbeatFrequencyMS=10000
+      uri: mongodb+srv://admin:admin@dearlavioncluster.xnanadi.mongodb.net/core-service?retryWrites=true&w=majority&appName=DearLavionCluster&serverSelectionTimeoutMS=10000
       auto-index-creation: true
   main:
     allow-circular-references: true
