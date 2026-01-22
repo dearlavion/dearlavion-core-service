@@ -21,7 +21,10 @@ FROM eclipse-temurin:21-jre
 WORKDIR /app
 
 # ✅ JVM networking options (CRITICAL)
-ENV JAVA_TOOL_OPTIONS="-Djava.net.preferIPv4Stack=true"
+ENV JAVA_TOOL_OPTIONS="\
+-Djava.net.preferIPv4Stack=true \
+-Dsun.net.client.defaultConnectTimeout=10000 \
+-Dsun.net.client.defaultReadTimeout=10000"
 
 # Copy the JAR from the build stage
 COPY --from=build /app/target/*.jar app.jar
