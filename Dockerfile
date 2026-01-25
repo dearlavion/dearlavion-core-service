@@ -26,5 +26,11 @@ COPY --from=build /app/target/*.jar app.jar
 # ✅ Set the Spring profile to dev
 ENV SPRING_PROFILES_ACTIVE=dev
 
+# ✅ CRITICAL: Fix Docker + Mongo Atlas DNS issues
+ENV JAVA_TOOL_OPTIONS="\
+-Djava.net.preferIPv4Stack=true \
+-Dsun.net.inetaddr.ttl=60 \
+-Dsun.net.inetaddr.negative.ttl=10"
+
 # Run the application
 CMD ["java", "-jar", "app.jar"]
