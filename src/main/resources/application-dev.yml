@@ -1,7 +1,7 @@
 spring:
   data:
     mongodb:
-      uri: "mongodb://admin:admin@ac-h22fblc-shard-00-00.xnanadi.mongodb.net:27017,ac-h22fblc-shard-00-01.xnanadi.mongodb.net:27017,ac-h22fblc-shard-00-02.xnanadi.mongodb.net:27017/core-service?replicaSet=atlas-a8abpp-shard-0&retryWrites=true&w=majority"
+      uri: "mongodb://admin:admin@ac-h22fblc-shard-00-00.xnanadi.mongodb.net:27017,ac-h22fblc-shard-00-01.xnanadi.mongodb.net:27017,ac-h22fblc-shard-00-02.xnanadi.mongodb.net:27017/core-service?replicaSet=atlas-a8abpp-shard-0&retryWrites=true&w=majority&serverSelectionTimeoutMS=30000&connectTimeoutMS=20000&socketTimeoutMS=20000&heartbeatFrequencyMS=10000"
       auto-index-creation: true
   main:
     allow-circular-references: true
