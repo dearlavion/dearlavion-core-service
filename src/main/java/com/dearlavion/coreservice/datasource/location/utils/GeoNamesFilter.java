@@ -1,4 +1,4 @@
-package com.dearlavion.coreservice.datasource.countries;
+package com.dearlavion.coreservice.datasource.location.utils;
 
 import java.io.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -9,8 +9,14 @@ import java.util.Map;
 public class GeoNamesFilter {
 
     public static void main(String[] args) {
-        // Download files in:
-        // https://www.geonames.org/export/?utm_source=chatgpt.com
+        // Download files in: https://www.geonames.org/export/?utm_source=chatgpt.com
+        // After files are generated: import it in mongo:
+        // mongoimport \
+        //  --uri "mongodb+srv://admin:admin@dearlavioncluster.xnanadi.mongodb.net/core-service" \
+        //  --collection countries \
+        //  --file "/Users/alysson/Documents/DearLavionAnimation_Assets/cities_10000.json" \
+        //  --drop
+
         // Paths to GeoNames data
         String inputFile = "/Users/alysson/Documents/DearLavionAnimation_Assets/allCountries.txt";
         String countryFile = "/Users/alysson/Documents/DearLavionAnimation_Assets/countryInfo.txt";
