@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.GeoSpatialIndexType;
+import org.springframework.data.mongodb.core.index.GeoSpatialIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.math.BigDecimal;
@@ -23,7 +25,7 @@ public class Wish {
     private String image; // Wish image URL
     private String title; // Wish title
     private String body; // Wish description
-    private String location; // Location
+    //private String location; // Location
     private String[] categories; // Category name or id
     private String status; // OPEN/ONGOING/COMPLETED
     private Date startDate; // Start date
@@ -33,5 +35,10 @@ public class Wish {
     private String rateType;
     private BigDecimal amount;
     private List<WishRequestDTO> wishRequestList;
+    private String countryCode;      // ISO country code
+    private String countryName;
+    private String cityName;
+    @GeoSpatialIndexed(type = GeoSpatialIndexType.GEO_2DSPHERE)
+    private double[] geoPoints; // [longitude, latitude] order matters
 
 }

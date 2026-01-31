@@ -21,7 +21,7 @@ public class WishCacheUtil {
     private static final int MIN_TOKEN_LENGTH = 3;
 
     public static final Map<String, Function<Wish, String>> INDEX_FIELDS = Map.of(
-            LOCATION, Wish::getLocation,
+            //LOCATION, Wish::getLocation,
             STATUS, Wish::getStatus,
             RATE_TYPE, Wish::getRateType
     );

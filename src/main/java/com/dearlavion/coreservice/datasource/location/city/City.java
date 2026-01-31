@@ -2,10 +2,12 @@ package com.dearlavion.coreservice.datasource.location.city;
 
 import lombok.Data;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.GeoSpatialIndexType;
+import org.springframework.data.mongodb.core.index.GeoSpatialIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
-@Document(collection = "countries") // <-- your MongoDB collection
+@Document(collection = "countries")
 public class City {
 
     @Id
@@ -15,4 +17,6 @@ public class City {
     private String countryName;
     private String countryCode;
     private long population;
+    private Double latitude;
+    private Double longitude;
 }

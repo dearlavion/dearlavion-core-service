@@ -29,4 +29,9 @@ public class WishDTO {
     private Date createdAt;
     private Date updatedAt;
     private List<WishRequestDTO> wishRequestList;
+    private String countryCode;      // ISO country code
+    private String countryName;
+    private String cityName;
+    private Double latitude;
+    private Double longitude;
 }

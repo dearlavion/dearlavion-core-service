@@ -57,6 +57,10 @@ public class WishServiceImpl implements WishService {
 
         entity.setStatus("OPEN");
 
+        if (dto.getLatitude() != null && dto.getLongitude() != null) {
+            entity.setGeoPoints(new double[] { dto.getLongitude(), dto.getLatitude() });
+        }
+
         Wish saved = repo.save(entity);
         return mapper.map(saved, WishDTO.class);
     }
