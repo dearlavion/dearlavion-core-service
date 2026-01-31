@@ -6,6 +6,9 @@ import lombok.RequiredArgsConstructor;
 import com.dearlavion.coreservice.wish.Wish;
 import org.bson.types.Decimal128;
 import org.springframework.data.domain.*;
+import org.springframework.data.geo.Point;
+import org.springframework.data.geo.Distance;
+import org.springframework.data.geo.Metrics;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.*;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -61,11 +64,19 @@ public class WishCustomRepositoryImpl implements WishCustomRepository {
         applyRateCriteria(criteriaList, req);
         // Date
         applyStartDateCriteria(criteriaList, req);
-        //Other fields
-        applyFieldFilter(criteriaList, "location", req.getLocation(), true);
+
         applyFieldFilter(criteriaList, "status", req.getStatus(), false);
         applyFieldFilter(criteriaList, "username", req.getUsername(), false);
         applyFieldFilter(criteriaList, "categories", req.getCategories(), false);
+
+        // Country (prefer code, fallback to name)
+        applyFieldFilter(criteriaList, "countryCode", req.getCountryCode(), false);
+        applyFieldFilter(criteriaList, "countryName", req.getCountryName(), true);
+        // City
+        applyFieldFilter(criteriaList, "cityName", req.getCityName(), true);
+        // Geo (near me)
+        applyGeoCriteria(query, criteriaList, req);
+
 
         if (!criteriaList.isEmpty()) {
             query.addCriteria(new Criteria().andOperator(criteriaList.toArray(new Criteria[0])));
@@ -82,6 +93,26 @@ public class WishCustomRepositoryImpl implements WishCustomRepository {
         }
 
         return new PageImpl<>(result, pageable, total);
+    }
+
+    private void applyGeoCriteria(Query query, List<Criteria> criteriaList, WishSearchRequest req) {
+
+        if (req.getGeoPoints() == null || req.getGeoPoints().length != 2) {
+            return; // no geo search
+        }
+
+        double lng = req.getGeoPoints()[0];
+        double lat = req.getGeoPoints()[1];
+        double radiusKm = req.getRadiusKm() != null ? req.getRadiusKm() : 20.0; // default 20km
+
+        Point userLocation = new Point(lng, lat);
+        Distance distance = new Distance(radiusKm, Metrics.KILOMETERS);
+
+        Criteria geoCriteria = Criteria.where("geoPoints")
+                .nearSphere(userLocation)
+                .maxDistance(distance.getNormalizedValue());
+
+        criteriaList.add(geoCriteria);
     }
 
     private void cacheWishes(List<Wish> wishes) {
@@ -117,9 +148,9 @@ public class WishCustomRepositoryImpl implements WishCustomRepository {
     private List<Wish> searchCache(WishSearchRequest req) {
         List<String> keys = new ArrayList<>();
 
-        if (req.getLocation() != null && !req.getLocation().isBlank()) {
+        /*if (req.getLocation() != null && !req.getLocation().isBlank()) {
             keys.add(WishCacheUtil.setFieldKey(LOCATION, req.getLocation().toLowerCase()));
-        }
+        }*/
 
         if (req.getStatus() != null && !req.getStatus().isBlank()) {
             keys.add(WishCacheUtil.setFieldKey(STATUS, req.getStatus().toLowerCase()));

@@ -1,6 +1,8 @@
 package com.dearlavion.coreservice.wish.search;
 
 import lombok.Data;
+import org.springframework.data.mongodb.core.index.GeoSpatialIndexType;
+import org.springframework.data.mongodb.core.index.GeoSpatialIndexed;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -9,7 +11,6 @@ import java.util.List;
 @Data
 public class WishSearchRequest {
     private String keyword;          // search in title/body
-    private String location;
     private List<String> categories; // multiple categories
     private String status;           // OPEN/ONGOING/COMPLETED
     private String rateType;         // FREE/PAID
@@ -22,10 +23,28 @@ public class WishSearchRequest {
     private int size = 10;
     private String sortBy; // values: createdAtDesc, startDateAsc, startDateDesc
 
+    // LOCATION
+    private String countryCode; // ISO country code
+    private String countryName;
+    private String cityName;
+    // Geo search
+    private double[] geoPoints;   // [lng, lat]
+    private Double radiusKm;      // optional, default 20
+
+    public Double getRadiusKm() {return radiusKm;}
+    public void setRadiusKm(Double radiusKm) {this.radiusKm = radiusKm;}
+    public String getCountryCode() {return countryCode;}
+    public void setCountryCode(String countryCode) {this.countryCode = countryCode;}
+    public String getCountryName() {return countryName;}
+    public void setCountryName(String countryName) {this.countryName = countryName;}
+    public String getCityName() {return cityName;}
+    public void setCityName(String cityName) {this.cityName = cityName;}
+    public double[] getGeoPoints() {return geoPoints;}
+    public void setGeoPoints(double[] geoPoints) {this.geoPoints = geoPoints;}
     public String getKeyword() { return keyword; }
     public void setKeyword(String keyword) { this.keyword = keyword; }
-    public String getLocation() { return location; }
-    public void setLocation(String location) { this.location = location; }
+    //public String getLocation() { return location; }
+    //public void setLocation(String location) { this.location = location; }
     public List<String> getCategories() { return categories; }
     public void setCategories(List<String> categories) { this.categories = categories; }
     public String getStatus() { return status; }

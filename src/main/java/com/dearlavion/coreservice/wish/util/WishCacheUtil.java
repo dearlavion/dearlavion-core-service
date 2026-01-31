@@ -80,9 +80,9 @@ public class WishCacheUtil {
         // STEP 1: Build Redis keys for each filter
         List<String> filterKeys = new ArrayList<>();
 
-        if (req.getLocation() != null && !req.getLocation().isBlank()) {
+        /*if (req.getLocation() != null && !req.getLocation().isBlank()) {
             filterKeys.add("location:" + req.getLocation().toLowerCase());
-        }
+        }*/
 
         if (req.getStatus() != null && !req.getStatus().isBlank()) {
             filterKeys.add("status:" + req.getStatus().toUpperCase());
