@@ -37,6 +37,8 @@ public class SecurityConfig {
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/core/wish/search").permitAll()
                         .requestMatchers("/core/event/search").permitAll()
+                        .requestMatchers("/core/country/**").permitAll()
+                        .requestMatchers("/core/city/**").permitAll()
                         // AUTHENTICATED
                         .requestMatchers("/core/wish/**").authenticated()
                         .requestMatchers("/core/portfolio/**").authenticated()
