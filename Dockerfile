@@ -4,6 +4,18 @@
 FROM eclipse-temurin:21-jdk AS build
 WORKDIR /app
 
+# -------------------------
+# Add networking tools
+# -------------------------
+USER root
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        iputils-ping \
+        net-tools \
+        dnsutils \
+        redis-tools && \
+    rm -rf /var/lib/apt/lists/*
+
 # Install Maven
 RUN apt-get update && apt-get install -y maven
 
