@@ -18,6 +18,7 @@
 
   <properties>
     <java.version>21</java.version>
+    <mongodb.driver.version>5.7.0</mongodb.driver.version>
   </properties>
 
   <dependencies>

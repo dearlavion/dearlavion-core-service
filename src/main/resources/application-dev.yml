@@ -3,7 +3,7 @@ spring:
     type: redis   # 👈 enables Redis as Spring Cache
   data:
     mongodb:
-      uri: mongodb+srv://admin:admin@dearlavioncluster.xnanadi.mongodb.net/core-service?retryWrites=true&w=majority&appName=DearLavionCluster&ssl=true
+      uri: mongodb+srv://admin:admin@dearlavioncluster.xnanadi.mongodb.net/core-service?retryWrites=true&w=majority&ssl=true&socketKeepAlive=true&connectTimeoutMS=30000&socketTimeoutMS=60000&serverSelectionTimeoutMS=60000
       auto-index-creation: true
   main:
     allow-circular-references: true
