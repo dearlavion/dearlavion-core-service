@@ -1,5 +1,6 @@
 package com.dearlavion.coreservice.wish;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,7 +27,7 @@ public class Wish {
     private String title; // Wish title
     private String body; // Wish description
     //private String location; // Location
-    private String[] categories; // Category name or id
+    private List<String> categories; // Category name or id
     private String status; // OPEN/ONGOING/COMPLETED
     private Date startDate; // Start date
     private Date endDate; // End date

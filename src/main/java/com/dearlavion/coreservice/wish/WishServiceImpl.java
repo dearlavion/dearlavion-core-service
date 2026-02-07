@@ -1,5 +1,6 @@
 package com.dearlavion.coreservice.wish;
 
+import com.dearlavion.coreservice.ai.AiService;
 import com.dearlavion.coreservice.request.RequestService;
 import com.dearlavion.coreservice.wish.search.WishSearchRequest;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -26,6 +27,9 @@ public class WishServiceImpl implements WishService {
     @Autowired
     private RequestService requestService;
 
+    @Autowired
+    private AiService aiService;
+
     @Override
     public Optional<WishDTO> findById(String id) {
         return repo.findById(id).map(e -> mapper.map(e, WishDTO.class));
@@ -47,7 +51,7 @@ public class WishServiceImpl implements WishService {
         Wish entity = mapper.map(dto, Wish.class);
 
         //to avoid duplicate categories
-        entity.setCategories(dto.getCategories());
+        entity.setCategories(populateCategories(dto));
 
         // 🔥 Set createdAt only on creation
         entity.setCreatedAt(new Date());
@@ -231,5 +235,20 @@ public class WishServiceImpl implements WishService {
             dto.setAmount(null);
         }
     }
+
+    private List<String>  populateCategories(WishDTO dto) {
+        List<String> categories = aiService.generateCategories(dto.getTitle(), dto.getBody(), 5);
+        return normalizeCategories(categories);
+    }
+
+    public List<String> normalizeCategories(List<String> categories) {
+        return categories.stream()
+                .map(String::toLowerCase)
+                .map(c -> c.replaceAll("[^a-z0-9 ]", "")) // remove symbols
+                .map(c -> c.replace(" ", "")) // hashtag style
+                .distinct()
+                .toList();
+    }
+
 
 }

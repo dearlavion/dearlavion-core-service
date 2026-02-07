@@ -1,8 +1,6 @@
 package com.dearlavion.coreservice.wish.search;
 
 import lombok.Data;
-import org.springframework.data.mongodb.core.index.GeoSpatialIndexType;
-import org.springframework.data.mongodb.core.index.GeoSpatialIndexed;
 
 import java.math.BigDecimal;
 import java.time.Instant;

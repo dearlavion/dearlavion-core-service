@@ -20,7 +20,7 @@ public class WishDTO {
     private String title;
     private String body;
     private String location;
-    private String[] categories;
+    private List<String> categories;
     private String status;
     private String rateType;
     private BigDecimal amount;
