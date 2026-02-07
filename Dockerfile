@@ -4,6 +4,18 @@
 FROM eclipse-temurin:21-jdk AS build
 WORKDIR /app
 
+# -------------------------
+# Add networking tools for build stage (optional, mostly for debugging)
+# -------------------------
+USER root
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        iputils-ping \
+        net-tools \
+        dnsutils \
+        redis-tools && \
+    rm -rf /var/lib/apt/lists/*
+
 # Install Maven
 RUN apt-get update && apt-get install -y maven
 
@@ -20,13 +32,25 @@ RUN mvn clean package -DskipTests
 FROM eclipse-temurin:21-jre
 WORKDIR /app
 
+# -------------------------
+# Install networking tools in runtime
+# -------------------------
+USER root
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        iputils-ping \
+        net-tools \
+        dnsutils \
+        redis-tools && \
+    rm -rf /var/lib/apt/lists/*
+
 # Copy the JAR from the build stage
 COPY --from=build /app/target/*.jar app.jar
 
 # ✅ Set the Spring profile to dev
 ENV SPRING_PROFILES_ACTIVE=dev
 
-# ✅ CRITICAL: Fix Docker + Mongo Atlas DNS issues
+# ✅ Fix Docker + Mongo Atlas DNS issues
 ENV JAVA_TOOL_OPTIONS="\
 -Djava.net.preferIPv4Stack=true \
 -Dsun.net.inetaddr.ttl=60 \
