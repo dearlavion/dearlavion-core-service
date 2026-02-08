@@ -35,5 +35,4 @@ logging:
 
 openai:
   enabled: false
-  api:
-    key: 123
+  api-key: 123

@@ -18,11 +18,11 @@ public class AiService {
     private final boolean aiEnabled;
 
 
-    public AiService(@Value("${openai.api.key}") String apiKey, @Value("${openai.enabled}") boolean aiEnabled) {
-        this.aiEnabled = aiEnabled;
+    public AiService(OpenAiProperties properties) {
+        this.aiEnabled = properties.isEnabled();
 
-        if (aiEnabled && apiKey != null && !apiKey.isBlank()) {
-            this.openAiService = new OpenAiService(apiKey);
+        if (aiEnabled && properties.getApiKey() != null && !properties.getApiKey() .isBlank()) {
+            this.openAiService = new OpenAiService(properties.getApiKey() );
         } else {
             this.openAiService = null; // Disabled
         }
