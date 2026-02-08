@@ -1,6 +1,6 @@
 package com.dearlavion.coreservice.wish;
 
-import com.dearlavion.coreservice.ai.AiService;
+import com.dearlavion.coreservice.common.ai.AiService;
 import com.dearlavion.coreservice.request.RequestService;
 import com.dearlavion.coreservice.wish.search.WishSearchRequest;
 import com.fasterxml.jackson.databind.JsonMappingException;

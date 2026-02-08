@@ -1,7 +1,7 @@
 package com.dearlavion.coreservice.wish.search;
 
-import com.dearlavion.coreservice.common.cache.CacheService;
-import com.dearlavion.coreservice.wish.util.WishCacheUtil;
+import com.dearlavion.coreservice.wish.cache.WishIndexCacheService;
+import com.dearlavion.coreservice.wish.cache.WishSearchCacheService;
 import lombok.RequiredArgsConstructor;
 import com.dearlavion.coreservice.wish.Wish;
 import org.bson.types.Decimal128;
@@ -18,8 +18,6 @@ import org.springframework.stereotype.Repository;
 import java.util.*;
 import java.util.regex.Pattern;
 
-import static com.dearlavion.coreservice.wish.util.WishCacheUtil.*;
-
 @Repository
 @RequiredArgsConstructor
 public class WishCustomRepositoryImpl implements WishCustomRepository {
@@ -27,14 +25,15 @@ public class WishCustomRepositoryImpl implements WishCustomRepository {
     private final MongoTemplate mongoTemplate;
     private final RedisTemplate<String, Object> redisTemplate;
     private final StringRedisTemplate stringRedisTemplate;
-    private final CacheService cacheService;
+    private final WishSearchCacheService cacheSearchService;
+    private final WishIndexCacheService cacheIndexService;
 
     @Override
     public Page<Wish> searchWishes(WishSearchRequest req) {
         Pageable pageable = PageRequest.of(req.getPage(), req.getSize());
 
         // STEP 1: SEARCH CACHE
-        List<Wish> cachedWishes = searchCache(req);
+        List<Wish> cachedWishes = cacheSearchService.search(req);
         if (!cachedWishes.isEmpty()) {
             System.out.println("[CACHE] returning cached wishes: ");
             cachedWishes.stream()
@@ -89,7 +88,7 @@ public class WishCustomRepositoryImpl implements WishCustomRepository {
 
         List<Wish> result = mongoTemplate.find(query, Wish.class);
         if (!result.isEmpty()) {
-            cacheWishes(result);
+            cacheIndexService.index(result);
         }
 
         return new PageImpl<>(result, pageable, total);
@@ -113,92 +112,6 @@ public class WishCustomRepositoryImpl implements WishCustomRepository {
                 .maxDistance(distance.getNormalizedValue());
 
         criteriaList.add(geoCriteria);
-    }
-
-    private void cacheWishes(List<Wish> wishes) {
-        wishes.stream().forEach( wish -> {
-            String id = wish.getId();
-            System.out.println("ID before caching: " + wish.getId());
-
-            // 1️⃣ Add to filter sets as plain strings
-            for (var entry : INDEX_FIELDS.entrySet()) {
-                String value = entry.getValue().apply(wish);
-                if (value != null && !value.isBlank()) {
-                    // Use stringRedisTemplate to store ID in set
-                    stringRedisTemplate.opsForSet().add(
-                            WishCacheUtil.setFieldKey(entry.getKey(), value.toLowerCase()),
-                            id
-                    );
-                }
-            }
-
-            // 2️⃣ Keyword tokens
-            extractTokens(wish.getTitle()).forEach(token ->
-                    stringRedisTemplate.opsForSet().add(
-                            WishCacheUtil.setFieldKey(TITLE, token),
-                            id
-                    )
-            );
-
-            // Store full object in hash using SAME id
-            redisTemplate.opsForHash().put(WishCacheUtil.HASH_KEY, id, wish);
-        });
-    }
-
-    private List<Wish> searchCache(WishSearchRequest req) {
-        List<String> keys = new ArrayList<>();
-
-        /*if (req.getLocation() != null && !req.getLocation().isBlank()) {
-            keys.add(WishCacheUtil.setFieldKey(LOCATION, req.getLocation().toLowerCase()));
-        }*/
-
-        if (req.getStatus() != null && !req.getStatus().isBlank()) {
-            keys.add(WishCacheUtil.setFieldKey(STATUS, req.getStatus().toLowerCase()));
-        }
-
-        if (req.getRateType() != null && !req.getRateType().isBlank()) {
-            keys.add(WishCacheUtil.setFieldKey(RATE_TYPE, req.getRateType().toLowerCase()));
-        }
-
-        String keyword = req.getKeyword();
-        if (keyword != null && keyword.trim().length() >= 3) {
-            Set<String> keywordTokens = extractTokens(keyword);
-            for (String token : keywordTokens) {
-                keys.add(setFieldKey(TITLE, token));
-            }
-        }
-
-        // No filters → no cache hit possible
-        if (keys.isEmpty()) {
-            return List.of();
-        }
-
-        // STEP 1: SINTER (intersection)
-        Set<String> candidateIds;
-
-        if (keys.size() == 1) {
-            candidateIds = stringRedisTemplate.opsForSet().members(keys.get(0));
-        } else {
-            candidateIds = stringRedisTemplate.opsForSet()
-                    .intersect(keys.get(0), keys.subList(1, keys.size()));
-        }
-
-        if (candidateIds == null || candidateIds.isEmpty()) {
-            return List.of();
-        }
-
-        // STEP 2: Fetch Wish objects by IDs
-        return fetchWishesByIds(candidateIds);
-    }
-
-    private List<Wish> fetchWishesByIds(Set<String> ids) {
-        List<Object> values = redisTemplate.opsForHash()
-                .multiGet(HASH_KEY, new ArrayList<>(ids));
-
-        return values.stream()
-                .filter(Objects::nonNull)
-                .map(v -> (Wish) v)
-                .toList();
     }
 
     private void applyFieldFilter(List<Criteria> criteriaList, String fieldName, Object value, boolean regex) {

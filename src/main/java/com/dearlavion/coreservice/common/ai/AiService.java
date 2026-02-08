@@ -1,11 +1,10 @@
-package com.dearlavion.coreservice.ai;
+package com.dearlavion.coreservice.common.ai;
 import com.theokanning.openai.OpenAiService;
 import com.theokanning.openai.completion.chat.ChatCompletionRequest;
 import com.theokanning.openai.completion.chat.ChatMessage;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.type.TypeReference;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;

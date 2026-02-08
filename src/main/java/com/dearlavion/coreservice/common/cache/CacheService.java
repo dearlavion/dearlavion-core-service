@@ -1,11 +1,9 @@
 package com.dearlavion.coreservice.common.cache;
 
-import com.dearlavion.coreservice.wish.util.WishCacheUtil;
+import com.dearlavion.coreservice.wish.cache.WishCacheUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor

@@ -1,4 +1,4 @@
-package com.dearlavion.coreservice.ai;
+package com.dearlavion.coreservice.common.ai;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

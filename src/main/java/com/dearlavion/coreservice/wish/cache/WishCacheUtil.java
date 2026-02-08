@@ -1,4 +1,4 @@
-package com.dearlavion.coreservice.wish.util;
+package com.dearlavion.coreservice.wish.cache;
 
 import com.dearlavion.coreservice.wish.Wish;
 import com.dearlavion.coreservice.wish.search.WishSearchRequest;
