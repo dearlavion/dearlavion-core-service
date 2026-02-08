@@ -1,5 +1,6 @@
 package com.dearlavion.coreservice.wish.search;
 
+import com.dearlavion.coreservice.common.cache.RedisProperties;
 import com.dearlavion.coreservice.wish.cache.WishIndexCacheService;
 import com.dearlavion.coreservice.wish.cache.WishSearchCacheService;
 import lombok.RequiredArgsConstructor;
@@ -27,22 +28,25 @@ public class WishCustomRepositoryImpl implements WishCustomRepository {
     private final StringRedisTemplate stringRedisTemplate;
     private final WishSearchCacheService cacheSearchService;
     private final WishIndexCacheService cacheIndexService;
+    private final RedisProperties redisProperties;
 
     @Override
     public Page<Wish> searchWishes(WishSearchRequest req) {
         Pageable pageable = PageRequest.of(req.getPage(), req.getSize());
 
-        // STEP 1: SEARCH CACHE
-        List<Wish> cachedWishes = cacheSearchService.search(req);
-        if (!cachedWishes.isEmpty()) {
-            System.out.println("[CACHE] returning cached wishes: ");
-            cachedWishes.stream()
-                    .map(Wish::getId)
-                    .forEach(System.out::println);
-            List<Wish> paged = cachedWishes.stream().skip((long) req.getPage() * req.getSize())
-                    .limit(req.getSize()).toList();
+        if (redisProperties.isEnabled()) {
+            // STEP 1: SEARCH CACHE
+            List<Wish> cachedWishes = cacheSearchService.search(req);
+            if (!cachedWishes.isEmpty()) {
+                System.out.println("[CACHE] returning cached wishes: ");
+                cachedWishes.stream()
+                        .map(Wish::getId)
+                        .forEach(System.out::println);
+                List<Wish> paged = cachedWishes.stream().skip((long) req.getPage() * req.getSize())
+                        .limit(req.getSize()).toList();
 
-            return new PageImpl<>(paged, pageable, cachedWishes.size());
+                return new PageImpl<>(paged, pageable, cachedWishes.size());
+            }
         }
 
         // STEP 2: SEARCH DB

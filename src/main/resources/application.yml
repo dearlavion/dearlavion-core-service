@@ -11,6 +11,7 @@ spring:
     serialization:
       WRITE_DATES_AS_TIMESTAMPS: false
   redis:
+    enabled: false
     host: localhost
     port: 6379
     timeout: 5000ms
