@@ -1,6 +1,7 @@
 package com.dearlavion.coreservice.wish;
 
 import com.dearlavion.coreservice.common.ai.AiService;
+import com.dearlavion.coreservice.kafka.WishEventProducer;
 import com.dearlavion.coreservice.request.RequestService;
 import com.dearlavion.coreservice.wish.search.WishSearchRequest;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -29,6 +30,9 @@ public class WishServiceImpl implements WishService {
 
     @Autowired
     private AiService aiService;
+
+    @Autowired
+    private WishEventProducer wishEventProducer;
 
     @Override
     public Optional<WishDTO> findById(String id) {
@@ -66,6 +70,7 @@ public class WishServiceImpl implements WishService {
         }
 
         Wish saved = repo.save(entity);
+        wishEventProducer.publishWishCreated(saved);
         return mapper.map(saved, WishDTO.class);
     }
 
