@@ -91,7 +91,7 @@ public class WishCustomRepositoryImpl implements WishCustomRepository {
         query.with(determineSort(req));
 
         List<Wish> result = mongoTemplate.find(query, Wish.class);
-        if (!result.isEmpty()) {
+        if (redisProperties.isEnabled() && !result.isEmpty()) {
             cacheIndexService.index(result);
         }
 
