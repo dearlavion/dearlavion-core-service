@@ -14,4 +14,6 @@ public class WishEvent {
     private String id;
     private String username;
     private String title;
+    private String countryCode;
+    private String cityName;
 }

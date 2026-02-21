@@ -18,6 +18,8 @@ public class WishEventProducer {
                 .id(wish.getId())
                 .username(wish.getUsername())
                 .title(wish.getTitle())
+                .countryCode(wish.getCountryCode())
+                .cityName(wish.getCityName())
                 .build();
 
         kafkaTemplate.send("wish-event", event);
