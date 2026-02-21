@@ -20,6 +20,7 @@ public class WishEventProducer {
                 .title(wish.getTitle())
                 .countryCode(wish.getCountryCode())
                 .cityName(wish.getCityName())
+                .amount(wish.getAmount())
                 .build();
 
         kafkaTemplate.send("wish-event", event);
