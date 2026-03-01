@@ -32,7 +32,7 @@ public class WishServiceImpl implements WishService {
     private AiService aiService;
 
     @Autowired
-    private Optional<KafkaEventProducer> wishEventProducer;
+    private Optional<KafkaEventProducer> eventProducer;
 
     @Override
     public Optional<WishDTO> findById(String id) {
@@ -70,7 +70,7 @@ public class WishServiceImpl implements WishService {
         }
 
         Wish saved = repo.save(entity);
-        wishEventProducer.ifPresent(producer -> producer.publishWishCreated(saved));
+        eventProducer.ifPresent(producer -> producer.publishWishCreated(saved));
         return mapper.map(saved, WishDTO.class);
     }
 
