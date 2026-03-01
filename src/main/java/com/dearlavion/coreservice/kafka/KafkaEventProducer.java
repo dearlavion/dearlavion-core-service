@@ -1,5 +1,7 @@
 package com.dearlavion.coreservice.kafka;
 
+import com.dearlavion.coreservice.kafka.dto.CoreServiceEvent;
+import com.dearlavion.coreservice.kafka.dto.EventType;
 import com.dearlavion.coreservice.kafka.dto.WishEvent;
 import com.dearlavion.coreservice.wish.Wish;
 import lombok.RequiredArgsConstructor;
@@ -10,13 +12,13 @@ import org.springframework.stereotype.Service;
 @Service
 @ConditionalOnProperty(name = "kafka.enabled", havingValue = "true")
 @RequiredArgsConstructor
-public class WishEventProducer {
+public class KafkaEventProducer {
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
     public void publishWishCreated(Wish wish) {
 
-        WishEvent event = WishEvent.builder()
+        WishEvent wishEvent = WishEvent.builder()
                 .id(wish.getId())
                 .username(wish.getUsername())
                 .title(wish.getTitle())
@@ -25,6 +27,11 @@ public class WishEventProducer {
                 .amount(wish.getAmount())
                 .build();
 
-        kafkaTemplate.send("wish-event", event);
+        CoreServiceEvent event = CoreServiceEvent.builder()
+                .type(EventType.NEW_WISH)
+                .payload(wishEvent)
+                .build();
+
+        kafkaTemplate.send("core-service-event", event);
     }
 }

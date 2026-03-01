@@ -12,7 +12,7 @@ public class KafkaConfig {
     @Bean
     @ConditionalOnProperty(name = "kafka.enabled", havingValue = "true")
     public NewTopic wishCreatedTopic() {
-        return TopicBuilder.name("wish-event")
+        return TopicBuilder.name("core-service-event")
                 .partitions(1)
                 .replicas(1)
                 .build();

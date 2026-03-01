@@ -1,14 +1,13 @@
 package com.dearlavion.coreservice.wish;
 
 import com.dearlavion.coreservice.common.ai.AiService;
-import com.dearlavion.coreservice.kafka.WishEventProducer;
+import com.dearlavion.coreservice.kafka.KafkaEventProducer;
 import com.dearlavion.coreservice.request.RequestService;
 import com.dearlavion.coreservice.wish.search.WishSearchRequest;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +32,7 @@ public class WishServiceImpl implements WishService {
     private AiService aiService;
 
     @Autowired
-    private Optional<WishEventProducer> wishEventProducer;
+    private Optional<KafkaEventProducer> wishEventProducer;
 
     @Override
     public Optional<WishDTO> findById(String id) {
