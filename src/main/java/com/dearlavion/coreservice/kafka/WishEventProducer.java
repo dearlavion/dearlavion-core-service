@@ -3,10 +3,12 @@ package com.dearlavion.coreservice.kafka;
 import com.dearlavion.coreservice.kafka.dto.WishEvent;
 import com.dearlavion.coreservice.wish.Wish;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
+@ConditionalOnProperty(name = "kafka.enabled", havingValue = "true")
 @RequiredArgsConstructor
 public class WishEventProducer {
 

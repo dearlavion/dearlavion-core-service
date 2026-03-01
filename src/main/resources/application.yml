@@ -29,6 +29,9 @@ auth:
   server:
     url: http://localhost:8081
 
+kafka:
+  enabled: true
+
 springdoc:
   api-docs:
     path: /v3/api-docs

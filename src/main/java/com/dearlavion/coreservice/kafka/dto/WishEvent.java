@@ -12,12 +12,10 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 public class WishEvent {
-
     private String id;
     private String username;
     private String title;
     private String countryCode;
     private String cityName;
-
     private BigDecimal amount;
 }

@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +33,7 @@ public class WishServiceImpl implements WishService {
     private AiService aiService;
 
     @Autowired
-    private WishEventProducer wishEventProducer;
+    private Optional<WishEventProducer> wishEventProducer;
 
     @Override
     public Optional<WishDTO> findById(String id) {
@@ -70,7 +71,7 @@ public class WishServiceImpl implements WishService {
         }
 
         Wish saved = repo.save(entity);
-        wishEventProducer.publishWishCreated(saved);
+        wishEventProducer.ifPresent(producer -> producer.publishWishCreated(saved));
         return mapper.map(saved, WishDTO.class);
     }
 
